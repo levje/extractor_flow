@@ -13,7 +13,7 @@ fi
 
 if [ "${keep}" = "true" ]
 then
-    scil_streamlines_math.py difference ${tractogram} \
+    scil_tractogram_math.py difference ${tractogram} \
                                         ${basename}__${out_extension}.trk \
                                         ${sid}__${remaining_extension}.trk ;
     scil_count_streamlines.py ${sid}__${remaining_extension}.trk > ${sid}__${remaining_extension}.txt;
