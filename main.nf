@@ -336,7 +336,7 @@ process Extract_plausible_cerebellum {
         --filtering_list ${params.FLF}cerebellum_in_midbrain.txt -f
   scil_filter_tractogram.py ${sid}__tmp_in_cerebellum.trk ${sid}__all_in_cerebellum_in_redN_and_Thal.trk\
         --filtering_list ${params.FLF}cerebellum_in_rednucleus_and_thalamus.txt -f
-  scil_tractogram_math.py union ${sid}__all_in_*.trk ${sid}__all_cerebellum_plausibles.trk -f
+  scil_tractogram_math.py union ${sid}__all_in_*.trk ${sid}__all_cerebellum_plausibles.trk --save_empty -f
   """
 }
 
@@ -416,7 +416,7 @@ process Extract_plausible_brainstem {
       --filtering_list ${params.FLF}brainstem_ee_tmp_02.txt -f
 
   scil_tractogram_math.py union ${sid}__ee_tmp_01.trk ${sid}__ee_tmp_02.trk\
-      ${sid}__ee_tmp_03.trk -f
+      ${sid}__ee_tmp_03.trk --save_empty -f
 
   # Extract ee Fronto-pontine R and L
   scil_filter_tractogram.py ${sid}__ee_tmp_03.trk ${sid}__ee_fronto_pontine_R.trk\
@@ -424,7 +424,7 @@ process Extract_plausible_brainstem {
   scil_filter_tractogram.py ${sid}__ee_tmp_03.trk ${sid}__ee_fronto_pontine_L.trk\
       --filtering_list ${params.FLF}brainstem_ee_F_pontine_L.txt -f
   scil_tractogram_math.py union ${sid}__ee_fronto_pontine_L.trk ${sid}__ee_fronto_pontine_R.trk\
-      ${sid}__ee_fronto_pontine.trk -f
+      ${sid}__ee_fronto_pontine.trk --save_empty -f
 
   # Extract ee ParietoTemporooccipital pontine R and L
   scil_filter_tractogram.py ${sid}__ee_tmp_03.trk ${sid}__ee_parietotemporooccipital_pontine_R.trk\
@@ -432,7 +432,7 @@ process Extract_plausible_brainstem {
   scil_filter_tractogram.py ${sid}__ee_tmp_03.trk ${sid}__ee_parietotemporooccipital_pontine_L.trk\
       --filtering_list ${params.FLF}brainstem_ee_PTO_pontine_L.txt -f
   scil_tractogram_math.py union ${sid}__ee_parietotemporooccipital_pontine_L.trk ${sid}__ee_parietotemporooccipital_pontine_R.trk\
-      ${sid}__ee_parietotemporooccipital_pontine.trk -f
+      ${sid}__ee_parietotemporooccipital_pontine.trk --save_empty -f
 
   # Extract ee Pyramidal
   scil_filter_tractogram.py ${sid}__ee_tmp_03.trk ${sid}__ee_pyramidal.trk\
@@ -445,11 +445,11 @@ process Extract_plausible_brainstem {
 
   rm -f ${sid}__*tmp_*.trk
 
-  scil_tractogram_math.py union ${sid}__be_*.trk ${sid}__ee_*.trk ${sid}__all_brainstem_plausibles.trk -f
+  scil_tractogram_math.py union ${sid}__be_*.trk ${sid}__ee_*.trk ${sid}__all_brainstem_plausibles.trk --save_empty -f
 
   if ${params.keep_intermediate_steps}
   then
-    scil_tractogram_math.py difference ${sid}__all_brainstem.trk ${sid}__all_brainstem_plausibles.trk ${sid}__all_brainstem_unplausibles.trk -f
+    scil_tractogram_math.py difference ${sid}__all_brainstem.trk ${sid}__all_brainstem_plausibles.trk ${sid}__all_brainstem_unplausibles.trk  --save_empty -f
   fi
   """
 }
@@ -656,7 +656,7 @@ process Merge_BG_Thal{
 
   script:
   """
-  scil_tractogram_math.py union ${tractogram} ${sid}__BG_ipsi_Thal_all.trk -f
+  scil_tractogram_math.py union ${tractogram} ${sid}__BG_ipsi_Thal_all.trk --save_empty -f
   """
 }
 
@@ -701,7 +701,7 @@ process Merge_BG_Put{
 
   script:
   """
-  scil_tractogram_math.py union ${tractogram} ${sid}__BG_ipsi_Put_all.trk -f
+  scil_tractogram_math.py union ${tractogram} ${sid}__BG_ipsi_Put_all.trk --save_empty -f
   """
 }
 
@@ -747,7 +747,7 @@ process Merge_BG_Caud{
 
   script:
   """
-  scil_tractogram_math.py union ${tractogram} ${sid}__BG_ipsi_Caud_all.trk -f
+  scil_tractogram_math.py union ${tractogram} ${sid}__BG_ipsi_Caud_all.trk --save_empty -f
   """
 }
 
@@ -798,13 +798,13 @@ process Split_ushape_CGM_asso {
       --filtering_list ${params.FLF}all_in_CGM_${side}.txt -f
 
     scil_tractogram_math.py difference ${tractogram} ${sid}__tmp1_${side}.trk \
-                             ${sid}__asso_SWM_${side}.trk -f
+                             ${sid}__asso_SWM_${side}.trk --save_empty -f
 
     scil_filter_tractogram.py ${sid}__tmp1_${side}.trk ${sid}__asso_only_in_CGM_${side}.trk \
       --filtering_list ${params.FLF}not_in_SWM_${side}.txt -f
 
     scil_tractogram_math.py difference ${sid}__tmp1_${side}.trk ${sid}__asso_only_in_CGM_${side}.trk \
-                                 ${sid}__tmp2_${side}.trk -f
+                                 ${sid}__tmp2_${side}.trk --save_empty -f
 
     scil_filter_tractogram.py ${sid}__tmp2_${side}.trk ${sid}__asso_Ushape_${side}.trk \
       --filtering_list ${params.FLF}not_in_DWM_${side}.txt -f
@@ -812,9 +812,9 @@ process Split_ushape_CGM_asso {
     scil_extract_ushape.py ${sid}__asso_Ushape_${side}.trk --minU 0.5 --maxU 1 ${sid}__asso_Ushape_${side}_u.trk -f
 
     scil_tractogram_math.py difference ${sid}__tmp2_${side}.trk ${sid}__asso_Ushape_${side}.trk \
-                               ${sid}__asso_DWM_${side}.trk -f
+                               ${sid}__asso_DWM_${side}.trk --save_empty -f
 
-    scil_tractogram_math.py union ${sid}__asso_DWM_${side}.trk ${sid}__asso_SWM_${side}.trk ${sid}__asso_f_${side}.trk -f
+    scil_tractogram_math.py union ${sid}__asso_DWM_${side}.trk ${sid}__asso_SWM_${side}.trk ${sid}__asso_f_${side}.trk --save_empty -f
 
     if ${params.keep_intermediate_steps}
     then
@@ -989,7 +989,7 @@ output:
 
 script:
   """
-  scil_tractogram_math.py union ${tractogram} ${sid}__CC_homo.trk
+  scil_tractogram_math.py union ${tractogram} ${sid}__CC_homo.trk --save_empty
   """
 }
 
@@ -1011,11 +1011,11 @@ process CC_all_commissural {
 
   script:
   """
-    scil_tractogram_math.py union ${accx} ${ccbg} ${cc_homo} ${sid}__plausible_commissural_${params.template_space}.trk -f
+    scil_tractogram_math.py union ${accx} ${ccbg} ${cc_homo} ${sid}__plausible_commissural_${params.template_space}.trk --save_empty -f
 
     if ${params.keep_intermediate_steps}
     then
-      scil_tractogram_math.py difference ${tmp_cc} ${sid}__plausible_commissural_${params.template_space}.trk ${sid}__unplausible_commissural.trk -f
+      scil_tractogram_math.py difference ${tmp_cc} ${sid}__plausible_commissural_${params.template_space}.trk ${sid}__unplausible_commissural.trk --save_empty -f
     fi
   """
 }
@@ -1063,7 +1063,7 @@ process Merge_asso_ventral {
 
   script:
   """
-  scil_tractogram_math.py union ${trk01} ${trk02} ${trk03} ${sid}__asso_all_ventral_f_${side}.trk -f
+  scil_tractogram_math.py union ${trk01} ${trk02} ${trk03} ${sid}__asso_all_ventral_f_${side}.trk --save_empty -f
   """
 }
 
@@ -1134,7 +1134,7 @@ process Merge_asso_dorsal_f_p {
 
   script:
   """
-  scil_tractogram_math.py union ${tractogram} ${sid}__asso_F_P_dorsal_f_${side}.trk -f
+  scil_tractogram_math.py union ${tractogram} ${sid}__asso_F_P_dorsal_f_${side}.trk --save_empty -f
   """
 }
 
@@ -1180,7 +1180,7 @@ process Merge_asso_dorsal {
 
   script:
   """
-  scil_tractogram_math.py union ${trk01} ${trk02} ${trk03} ${sid}__asso_all_dorsal_f_${side}.trk -f
+  scil_tractogram_math.py union ${trk01} ${trk02} ${trk03} ${sid}__asso_all_dorsal_f_${side}.trk --save_empty -f
   """
 }
 
@@ -1226,7 +1226,7 @@ process Merge_p_o {
 
   script:
   """
-  scil_tractogram_math.py union ${tractogram} ${sid}__asso_all_P_O_f_${side}.trk -f
+  scil_tractogram_math.py union ${tractogram} ${sid}__asso_all_P_O_f_${side}.trk --save_empty -f
   """
 }
 
@@ -1272,7 +1272,7 @@ process Merge_p_t {
 
   script:
   """
-  scil_tractogram_math.py union ${tractogram} ${sid}__asso_all_P_T_f_${side}.trk -f
+  scil_tractogram_math.py union ${tractogram} ${sid}__asso_all_P_T_f_${side}.trk --save_empty -f
   """
 }
 
@@ -1319,7 +1319,7 @@ process Merge_o_t {
 
   script:
   """
-  scil_tractogram_math.py union ${tractogram} ${sid}__asso_all_O_T_f_${side}.trk -f
+  scil_tractogram_math.py union ${tractogram} ${sid}__asso_all_O_T_f_${side}.trk --save_empty -f
   """
 }
 
@@ -1365,7 +1365,7 @@ process Merge_ins {
 
   script:
   """
-  scil_tractogram_math.py union ${tractogram} ${sid}__asso_all_Ins_f_${side}.trk -f
+  scil_tractogram_math.py union ${tractogram} ${sid}__asso_all_Ins_f_${side}.trk --save_empty -f
   """
 }
 
@@ -1433,7 +1433,7 @@ process Merge_asso_be_frontal_gyrus{
   script:
   """
     scil_tractogram_math.py union ${tractogram}\
-      ${sid}_asso_all_intraF_be_f_${side}_u.trk -f
+      ${sid}_asso_all_intraF_be_f_${side}_u.trk --save_empty -f
   """
 }
 
@@ -1485,7 +1485,7 @@ process Merge_asso_ee_frontal_gyrus{
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraF_ee_f_${side}_u.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraF_ee_f_${side}_u.trk --save_empty -f
   """
 }
 
@@ -1527,7 +1527,7 @@ process Merge_asso_be_occipital_gyrus{
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraO_be_f_${side}_u.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraO_be_f_${side}_u.trk --save_empty -f
   """
 }
 
@@ -1571,7 +1571,7 @@ process Merge_asso_ee_occipital_gyrus{
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraO_ee_f_${side}_u.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraO_ee_f_${side}_u.trk --save_empty -f
   """
 }
 
@@ -1613,7 +1613,7 @@ process Merge_asso_be_parietal_gyrus{
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraP_be_f_${side}_u.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraP_be_f_${side}_u.trk --save_empty -f
   """
 }
 
@@ -1657,7 +1657,7 @@ process Merge_asso_ee_parietal_gyrus{
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraP_ee_f_${side}.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraP_ee_f_${side}.trk --save_empty -f
   """
 }
 
@@ -1699,7 +1699,7 @@ process Merge_asso_be_temporal_gyrus{
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraT_be_f_${side}_u.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraT_be_f_${side}_u.trk --save_empty -f
   """
 }
 
@@ -1743,7 +1743,7 @@ process Merge_asso_ee_temporal_gyrus{
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraT_ee_f_${side}.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}_asso_all_intraT_ee_f_${side}.trk --save_empty -f
   """
 }
 
@@ -1761,7 +1761,7 @@ process Merge_trk_plausible{
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}__plausible_${params.template_space}_tmp.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}__plausible_${params.template_space}_tmp.trk --save_empty -f
     scil_shuffle_streamlines.py ${sid}__plausible_${params.template_space}_tmp.trk ${sid}__plausible_${params.template_space}.trk -f
   """
 }
@@ -1779,7 +1779,7 @@ process Extract_trk_unplausible{
 
   script:
   """
-    scil_tractogram_math.py difference ${trk01} ${trk02} ${sid}__unplausible_${params.template_space}.trk -f
+    scil_tractogram_math.py difference ${trk01} ${trk02} ${sid}__unplausible_${params.template_space}.trk --save_empty -f
   """
 }
 
@@ -1810,10 +1810,10 @@ process Rename_cc_homotopic {
 
   script:
   """
-  scil_tractogram_math.py union ${trk01} "${sid}__cc_homotopic_frontal_${params.template_space}.trk" -f
-  scil_tractogram_math.py union ${trk02} "${sid}__cc_homotopic_occipital_${params.template_space}.trk" -f
-  scil_tractogram_math.py union ${trk03} "${sid}__cc_homotopic_temporal_${params.template_space}.trk" -f
-  scil_tractogram_math.py union ${trk04} "${sid}__cc_homotopic_parietal_${params.template_space}.trk" -f
+  scil_tractogram_math.py union ${trk01} "${sid}__cc_homotopic_frontal_${params.template_space}.trk" --save_empty -f
+  scil_tractogram_math.py union ${trk02} "${sid}__cc_homotopic_occipital_${params.template_space}.trk" --save_empty -f
+  scil_tractogram_math.py union ${trk03} "${sid}__cc_homotopic_temporal_${params.template_space}.trk" --save_empty -f
+  scil_tractogram_math.py union ${trk04} "${sid}__cc_homotopic_parietal_${params.template_space}.trk" --save_empty -f
   cp ${trk05} ${sid}__cc_homotopic_insular_${params.template_space}.trk -f
   cp ${trk06} ${sid}__cc_homotopic_cingulum_${params.template_space}.trk -f
   """
@@ -1838,7 +1838,7 @@ process Rename_cortico_striate {
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}__corticostriatal_${side}_${params.template_space}.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}__corticostriatal_${side}_${params.template_space}.trk --save_empty -f
   """
 }
 
@@ -1860,7 +1860,7 @@ process Rename_coronaradiata {
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}__coronaradiata_${side}_${params.template_space}.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}__coronaradiata_${side}_${params.template_space}.trk --save_empty -f
   """
 }
 
@@ -1882,7 +1882,7 @@ process Rename_optical_radiation {
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}__optical_radiation_${side}_${params.template_space}.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}__optical_radiation_${side}_${params.template_space}.trk --save_empty -f
   """
 }
 
@@ -1949,7 +1949,7 @@ process Rename_slf {
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${sid}__slf_${side}_${params.template_space}.trk -f
+    scil_tractogram_math.py union ${tractogram} ${sid}__slf_${side}_${params.template_space}.trk --save_empty -f
   """
 }
 
