@@ -18,7 +18,8 @@ if(params.help) {
                 "quick_registration": "$params.quick_registration",
                 "cpu_count":"$cpu_count",
                 "processes_bet_register_t1":"$params.processes_bet_register_t1",
-                "processes_major_filtering":"$params.processes_major_filtering"]  
+                "processes_major_filtering":"$params.processes_major_filtering",
+                "max_forks":"$params.max_forks"]
 
     engine = new groovy.text.SimpleTemplateEngine()
     template = engine.createTemplate(usage.text).make(bindings)
@@ -165,6 +166,7 @@ transformation_for_trk_registration
 process Transform_TRK {
     publishDir = params.final_output_mni_space
     cpus 1
+    maxForks params.max_forks
 
     input:
     set sid, file(transfo), file(inv_deformation), file(deformation), file(trk) from trk_and_template_for_transformation_to_template
@@ -226,7 +228,7 @@ rm_invalid_for_remove_out_not_JHU.mix(transformed_for_remove_out_not_JHU).set{fo
 
 process Major_filtering {
     cpus params.processes_major_filtering
-
+    maxForks params.max_forks
     input:
       set sid, file(tractogram) from for_major_filtering
 
