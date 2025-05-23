@@ -37,6 +37,7 @@ OPTIONAL ARGUMENTS (current value)
     --processes_major_filtering         Number of processes for the major filtering task ($processes_major_filtering).
     --processes                         The number of parallel processes to launch ($cpu_count).
                                         Only affects the local scheduler.
+    --max_forks				Limit the number of forks in the major filtering and the transforming tractogram task ($max_forks) 
 
 AVAILABLE PROFILES (using -profile option (e.g. -profile macos,extract_bundles))
 
