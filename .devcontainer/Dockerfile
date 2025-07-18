@@ -62,9 +62,11 @@ RUN arch=$(uname -m) && \
     rm -f miniconda.sh
 
 # Install nextflow, nf-core, Mamba, and pytest-workflow
-RUN conda config --add channels bioconda && \
+RUN conda install --name=base conda-anaconda-tos && \
+    conda config --add channels bioconda && \
     conda config --add channels conda-forge && \
     conda config --set channel_priority strict && \
+    conda tos accept && \
     conda update --quiet --yes --all && \
     conda install --quiet --yes --name base \
         mamba \

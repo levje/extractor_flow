@@ -20,6 +20,8 @@ DESCRIPTION
                                         └── S2
                                             └── *.trk
                                             └── *_t1.nii.gz (diff space, optional)
+    --templates_dir=/path/to/templates_dir
+                                        Directory containing the templates (e.g. JHU atlas).
 
 OPTIONAL ARGUMENTS (current value)
 

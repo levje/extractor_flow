@@ -5,9 +5,19 @@
     "https://github.com/scilus/nf-neuro.git": {
       "modules": {
         "nf-neuro": {
-          "reconst/dtimetrics": {
+          "betcrop/antsbet": {
             "branch": "main",
-            "git_sha": "452075a707a9769b0509fc33a1051e8ba80799bf",
+            "git_sha": "0135a3ba712e89ad44419476494fca6fa3dd67ff",
+            "installed_by": ["modules"]
+          },
+          "registration/ants": {
+            "branch": "main",
+            "git_sha": "2b45c6a74dc9b5b793d7e40c6a715f4c07064864",
+            "installed_by": ["modules"]
+          },
+          "registration/tractogram": {
+            "branch": "main",
+            "git_sha": "0135a3ba712e89ad44419476494fca6fa3dd67ff",
             "installed_by": ["modules"]
           }
         }
