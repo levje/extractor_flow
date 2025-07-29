@@ -1,0 +1,5 @@
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_AC.nii.gz any include
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_AC_not_Fx.nii.gz any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Sylvius_L.nii.gz any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Sylvius_R.nii.gz any exclude
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "21:26 121:126 501:504 551:557 707 802:803 805:807 1021:1026 1121:1126 1551:1557 1707 1802:1803 1805:1807" any exclude

@@ -1,7 +1,9 @@
 include { REGISTRATION_ANTS } from '../../modules/nf-neuro/registration/ants/main'
 include { BETCROP_ANTSBET } from '../../modules/nf-neuro/betcrop/antsbet/main'
-include { REGISTRATION_TRACTOGRAM } from '../../modules/nf-neuro/registration/tractogram/main'
-include { REGISTRATION_TRACTOGRAM as REGISTER_TRACTOGRAM_ORIG } from '../../modules/nf-neuro/registration/tractogram/main'
+
+// TODO: Replace the following processes with the NF-Neuro module REGISTRATION_TRACTOGRAM
+include { REGISTRATION_TRACTOGRAM } from '../../modules/nf-neuro/registration/tractogram/main.nf'
+include { REGISTRATION_TRACTOGRAM as REGISTRATION_TRACTOGRAM_ORIG } from '../../modules/nf-neuro/registration/tractogram/main.nf'
 
 process Copy_t1_to_orig{
 //   publishDir = params.final_output_orig_space
@@ -94,13 +96,13 @@ workflow TRANSFORM_TO_ORIG {
         .map { sid, t1, trk, transfo, deformation ->
             [sid, t1, transfo, trk, [], deformation] }
 
-    trks_for_register.view()
 
     // takes:
     // sid, trk, t1, transfo, inv_deformation, deformation
-    REGISTER_TRACTOGRAM_ORIG(trks_for_register)
+    REGISTRATION_TRACTOGRAM_ORIG(trks_for_register)
     
     // Copy the original T1w to the subject folder.
+
     Copy_t1_to_orig(t1s)
 }
 
@@ -108,14 +110,14 @@ process Remove_invalid_streamlines {
     cpus 1
 
     input:
-    tuple val(sid), path(tractogram)
+    tuple val(meta), path(tractogram)
 
     output:
-    tuple val(sid), path("${sid}__rm_invalid_streamlines.trk"), emit: rm_invalid_for_remove_out_not_JHU
+    tuple val(meta), path("${meta.id}__rm_invalid_streamlines.trk"), emit: rm_invalid_for_remove_out_not_JHU
 
     script:
     """
-      scil_remove_invalid_streamlines.py ${tractogram} ${sid}__rm_invalid_streamlines.trk --cut_invalid --remove_single_point -f
+      scil_remove_invalid_streamlines.py ${tractogram} ${meta.id}__rm_invalid_streamlines.trk --cut_invalid --remove_single_point -f
     """
 }
 
@@ -123,14 +125,14 @@ process Copy_t1_atlas {
     cpus 1
 
     input:
-      tuple val(sid), path(tractogram)
+      tuple val(meta), path(tractogram)
 
     output:
-      path "${sid}__t1_mni_space.nii.gz"
+      path "${meta.id}__t1_mni_space.nii.gz"
 
     script:
     """
-      cp ${params.rois_folder}${params.atlas.template} ${sid}__t1_mni_space.nii.gz
+      cp ${params.rois_folder}${params.atlas.template} ${meta.id}__t1_mni_space.nii.gz
     """
 }
 

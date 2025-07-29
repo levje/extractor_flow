@@ -1,0 +1,15 @@
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "25 125" either_end include
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1025 1125" either_end include
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_AGWM_stem_L.nii.gz any include
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_AGWM_stem_R.nii.gz any include
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_AGWM_shell_L.nii.gz any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_AGWM_shell_R.nii.gz any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_SPGWM_stem_L.nii.gz any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_SPGWM_stem_R.nii.gz any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_SMGWM_stem_L.nii.gz any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_SMGWM_stem_R.nii.gz any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_PoCGWM_stem_L.nii.gz any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_PoCGWM_stem_R.nii.gz any exclude
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "504 1504" any include
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "501:503 1501:1503 61:68 161:165 558:561 1061:1068 1161:1168 1558:1561" any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Ventricles_not_CC.nii.gz any exclude

@@ -1,0 +1,5 @@
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "41 141" both_ends include
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_SOGWM_stem_L.nii.gz any include
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_SOGWM_shell_L.nii.gz any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Ventricles.nii.gz any exclude
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "21:26 42:45 61:68 121:126 142:145 161:165 501:504 531:535 558:561" any exclude

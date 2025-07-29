@@ -1,0 +1,1 @@
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Midline.nii.gz any exclude

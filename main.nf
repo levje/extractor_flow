@@ -7,7 +7,8 @@ params.debug = true
 
 include { check_required_params; check_nb_cpus } from './modules/local/verify_inputs.nf'
 include { TRANSFORM_TO_MNI; TRANSFORM_TO_ORIG; CLEAN_IF_FROM_MNI } from './modules/local/transform.nf'
-//include { RECONST_DTIMETRICS } from 'modules/nf-neuro/reconst/dtimetrics/main'
+include { MAJOR_FILTERING } from './modules/local/major_filtering.nf'
+include { EXTRACT } from './modules/local/extraction.nf'
 
 workflow get_data {
     main:
@@ -88,6 +89,17 @@ workflow {
     transformed = TRANSFORM_TO_MNI(data.tractograms, data.t1s)
     cleaned_tractograms = CLEAN_IF_FROM_MNI(data.tractograms, data.t1s)
     all_tractograms = cleaned_tractograms.cleaned_mni_tractograms.mix(transformed.tractograms)
+
+    // wmparc_atlas = Channel.fromPath("${params.rois_folder}${params.atlas.JHU_8}")
+    // csf_bin = Channel.fromPath("${params.rois_folder}${params.atlas.csf}")
+    // all_tractograms = all_tractograms.combine(wmparc_atlas, csf_bin)
+
+    rois_folder = Channel.fromPath("${params.rois_folder}")
+    all_tractograms = all_tractograms.combine(rois_folder)
+    filtered_tractograms = MAJOR_FILTERING(all_tractograms)
+
+    // Start extracting bundles
+    EXTRACT(filtered_tractograms.unplausible, filtered_tractograms.wb)
 
     // Make sure this works properly (at first test seemed to output invalid streamlines)
     // TRANSFORM_TO_ORIG(data.t1s, transformed.tractograms, transformed.transformations_for_orig)
