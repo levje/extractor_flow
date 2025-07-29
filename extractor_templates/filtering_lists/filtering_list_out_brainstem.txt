@@ -1,0 +1,1 @@
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "801:807 1801:1807" either_end exclude

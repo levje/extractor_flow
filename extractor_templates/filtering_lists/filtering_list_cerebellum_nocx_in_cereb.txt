@@ -1,0 +1,4 @@
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "901:902 1901:1902" either_end include
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "901:906 1901:1906" both_ends include
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "803 1803" any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Midbrain_notSCP.nii.gz any exclude

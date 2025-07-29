@@ -1,0 +1,4 @@
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "704" either_end include
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "91" either_end include
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "521:523" any include
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "801:807 1801:1807 701:703 705:707 1:8 21:26 61:68 101:108 121:126 161:165 531:535 551:557 581" any exclude

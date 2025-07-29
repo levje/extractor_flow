@@ -1,0 +1,4 @@
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1026 1126" both_ends include
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_SMGWM_stem_R.nii.gz any include
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_SMGWM_shell_R.nii.gz any exclude
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1021:1025 1041:1045 1061:1068 1081 1091 1121:1125 1141:1145 1161:1165 1181 1521:1523 1531:1535 1557" any exclude

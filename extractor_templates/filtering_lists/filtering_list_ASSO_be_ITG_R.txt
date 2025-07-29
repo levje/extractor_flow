@@ -1,0 +1,5 @@
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1063 1163" both_ends include
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_ITGWM_stem_R.nii.gz any include
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_ITGWM_shell_R.nii.gz any exclude
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Ventricles.nii.gz any exclude
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1021:1026 1041:1045 1061:1062 1064:1065 1068 1091 1121:1126 1141:1145 1161:1162 1164:1165 1501:1504 1521:1523 1531:1535 1558:1561 1581:1582" any exclude

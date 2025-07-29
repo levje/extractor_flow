@@ -1,0 +1,6 @@
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "801:807 1801:1807" both_ends exclude
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1:181 1001:1181" either_end include
+drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Midline.nii.gz any exclude
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "707 1707" any include
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "531:535 1531:1535" any include
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "801 1801" any include

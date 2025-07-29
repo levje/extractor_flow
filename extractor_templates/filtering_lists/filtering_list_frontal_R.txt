@@ -1,0 +1,1 @@
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1001:1008 1101:1108" either_end include

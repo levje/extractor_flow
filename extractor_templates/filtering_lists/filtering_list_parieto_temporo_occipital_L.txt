@@ -1,0 +1,1 @@
+atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1:8 21:26 41:45 101:108 121:126 141:145" either_end include
