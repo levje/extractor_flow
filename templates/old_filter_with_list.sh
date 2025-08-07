@@ -33,4 +33,3 @@ then
                                         --save_empty;
     scil_count_streamlines.py ${meta.id}__${remaining_extension}.trk > ${meta.id}__${remaining_extension}.txt;
 fi
- 

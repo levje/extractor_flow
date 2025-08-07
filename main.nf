@@ -99,7 +99,7 @@ workflow {
     filtered_tractograms = MAJOR_FILTERING(all_tractograms)
 
     // Start extracting bundles
-    EXTRACT(filtered_tractograms.unplausible, filtered_tractograms.wb)
+    EXTRACT(filtered_tractograms.unplausible, filtered_tractograms.wb, data.sides)
 
     // Make sure this works properly (at first test seemed to output invalid streamlines)
     // TRANSFORM_TO_ORIG(data.t1s, transformed.tractograms, transformed.transformations_for_orig)
