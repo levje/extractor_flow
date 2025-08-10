@@ -85,9 +85,11 @@ process FILTER_LIST_SIDE {
     tuple val(meta), path("${meta.id}__${task.ext.out_extension}${out_suffix}.trk"), emit: extracted
     tuple val(meta), val(side), path("${meta.id}__${task.ext.out_extension}${out_suffix}.trk"), emit: extracted_with_side
     tuple val(meta), val(list), path("${meta.id}__${task.ext.out_extension}${out_suffix}.trk"), emit: extracted_with_list
+    tuple val(meta), val(side), val(list), path("${meta.id}__${task.ext.out_extension}${out_suffix}.trk"), emit: extracted_with_side_list
     tuple val(meta), path("${meta.id}__${task.ext.remaining_extension}${out_suffix}.trk"), optional: true, emit: remaining
     tuple val(meta), val(side), path("${meta.id}__${task.ext.remaining_extension}${out_suffix}.trk"), optional: true, emit: remaining_with_side
     tuple val(meta), val(list), path("${meta.id}__${task.ext.remaining_extension}${out_suffix}.trk"), optional: true, emit: remaining_with_list
+    tuple val(meta), val(side), val(list), path("${meta.id}__${task.ext.remaining_extension}${out_suffix}.trk"), optional: true, emit: remaining_with_side_list
     path "${meta.id}__${task.ext.out_extension}${out_suffix}.txt"
     
   script:

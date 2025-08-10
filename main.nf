@@ -107,7 +107,7 @@ workflow {
 
     // Extract bundles
     if (params.extract_bundles) {
-        EXTRACT_BUNDLES(EXTRACT.out.for_bundle_extraction)
+        EXTRACT_BUNDLES(EXTRACT.out.for_bundle_extraction, data.sides)
 
         if (params.orig) {
             TRANSFORM_TO_ORIG(data.t1s, EXTRACT_BUNDLES.out.bundles, transformed.transformations_for_orig)
