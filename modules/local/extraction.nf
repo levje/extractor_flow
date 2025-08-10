@@ -424,10 +424,41 @@ workflow EXTRACT {
     for_trk_unplausible = mni_tractograms.join(TRK_PLAUSIBLE.out.tractogram)
     TRK_UNPLAUSIBLE(for_trk_unplausible)
 
+    /* Pack up for bundle extraction */
+    for_bundle_extraction = [
+      CC_Homotopic_frontal_for_rename: CC_Homotopic_frontal_for_rename,
+      CC_Homotopic_occipital_for_rename: CC_Homotopic_occipital_for_rename,
+      CC_Homotopic_temporal_for_rename: CC_Homotopic_temporal_for_rename,
+      CC_Homotopic_parietal_for_rename: CC_Homotopic_parietal_for_rename,
+      CC_Homotopic_insular_for_rename: CC_Homotopic_insular_for_rename,
+      CC_Homotopic_cingulum_for_rename: CC_Homotopic_cingulum_for_rename,
+      BG_ipsi_Caud_for_rename: SPLIT_BG_CAUD.out.extracted_with_side,
+      BG_ipsi_Put_for_rename: SPLIT_BG_PUT.out.extracted_with_side,
+      BG_ipsi_Thal_for_rename: bg_ipsi_thal_for_rename,
+      optic_radiation_for_rename: optic_radiation_for_rename,
+      asso_u_shape_for_rename: SPLIT_USHAPE_CGM_ASSO.out.asso_u_shape_for_rename,
+      Cing_for_rename: ASSO_CING.out.extracted_with_side,
+      asso_all_intra_inter_dorsal_all_f_O_for_rename: asso_all_intra_inter_dorsal_all_f_O_for_rename,
+      asso_all_intra_inter_dorsal_f_p_for_rename: ASSO_DORSAL_F_P.out.extracted_with_side_list,
+      asso_all_intra_inter_dorsal_all_f_T_for_rename: asso_all_intra_inter_dorsal_all_f_T_for_rename,
+      brainstem_corticopontine_frontal_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_corticopontine_frontal_for_rename,
+      brainstem_ee_corticopontine_parietotemporooccipital_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_ee_corticopontine_parietotemporooccipital_for_rename,
+      brainstem_pyramidal_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_pyramidal_for_rename,
+      fornix_for_rename: EXTRACT_FORNIX.out.extracted,
+      asso_IFOF_for_rename: SPLIT_ASSO_VENTRAL_IFOF_UF.out.extracted_with_side,
+      asso_UF_for_rename: SPLIT_ASSO_VENTRAL_IFOF_UF.out.remaining_with_side,
+      all_O_T_for_rename: MERGE_O_T.out.tractogram_with_side,
+      brainstem_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_for_trk_plausible,
+      cerebellum_for_rename: EXTRACT_PLAUSIBLE_CEREBELLUM.out.plausible,
+      accx_for_rename: EXTRACT_PLAUSIBLE_AC_CX.out.extracted,
+      plausible_commissural: CC_ALL_COMMISSURAL.out.plausible
+    ]
+
+
     emit:
     plausible = TRK_PLAUSIBLE.out.tractogram
     unplausible = TRK_UNPLAUSIBLE.out.tractogram
-    for_bundle_extraction = Channel.empty()
+    for_bundle_extraction
 }
 
 process EXTRACT_PLAUSIBLE_CEREBELLUM {
@@ -677,7 +708,7 @@ process CC_ALL_COMMISSURAL {
     tuple val(meta), path(tmp_cc), path(accx), path(ccbg), path(cc_homo) // from all_cc_for_commissural
 
   output:
-    tuple val(meta), path("${meta.id}__plausible_commissural_${params.mni_space}.trk"), emit: plausible_commissural_for_register_to_orig
+    tuple val(meta), path("${meta.id}__plausible_commissural_${params.mni_space}.trk"), emit: plausible
     path "${meta.id}__unplausible_commissural.trk", optional: true
 
   script:
