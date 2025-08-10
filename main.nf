@@ -9,23 +9,25 @@ include { check_required_params; check_nb_cpus } from './modules/local/verify_in
 include { TRANSFORM_TO_MNI; TRANSFORM_TO_ORIG; CLEAN_IF_FROM_MNI } from './modules/local/transform.nf'
 include { MAJOR_FILTERING } from './modules/local/major_filtering.nf'
 include { EXTRACT } from './modules/local/extraction.nf'
+include { EXTRACT_BUNDLES } from './modules/local/extension.nf'
 
 workflow get_data {
     main:
         if(params.help) {
             usage = file("$baseDir/USAGE")
             cpu_count = Runtime.runtime.availableProcessors()
-            bindings = ["rois_folder":"$params.rois_folder",
-                        "FLF": "$params.FLF",
-                        "run_bet":"$params.run_bet",
-                        "distance": "$params.distance",
-                        "orig":"$params.orig",
-                        "extended":"$params.extended",
-                        "keep_intermediate_steps":"$params.keep_intermediate_steps",
-                        "quick_registration": "$params.quick_registration",
-                        "cpu_count":"$cpu_count",
-                        "processes_bet_register_t1":"$params.processes_bet_register_t1",
-                        "processes_major_filtering":"$params.processes_major_filtering"]  
+            bindings = [
+                "rois_folder":               "$params.rois_folder",
+                "FLF":                       "$params.FLF",
+                "run_bet":                   "$params.run_bet",
+                "distance":                  "$params.distance",
+                "orig":                      "$params.orig",
+                "extract_bundles":           "$params.extract_bundles",
+                "keep_intermediate_steps":   "$params.keep_intermediate_steps",
+                "quick_registration":        "$params.quick_registration",
+                "processes_major_filtering": "$params.processes_major_filtering",
+                "cpu_count":                 "$cpu_count"
+            ]
 
             engine = new groovy.text.SimpleTemplateEngine()
             template = engine.createTemplate(usage.text).make(bindings)
@@ -88,19 +90,27 @@ workflow {
 
     transformed = TRANSFORM_TO_MNI(data.tractograms, data.t1s)
     cleaned_tractograms = CLEAN_IF_FROM_MNI(data.tractograms, data.t1s)
-    all_tractograms = cleaned_tractograms.cleaned_mni_tractograms.mix(transformed.tractograms)
+    all_mni_tractograms = cleaned_tractograms.cleaned_mni_tractograms.mix(transformed.tractograms)
 
-    // wmparc_atlas = Channel.fromPath("${params.rois_folder}${params.atlas.JHU_8}")
-    // csf_bin = Channel.fromPath("${params.rois_folder}${params.atlas.csf}")
-    // all_tractograms = all_tractograms.combine(wmparc_atlas, csf_bin)
+    // Major filtering
+    filtered_tractograms = MAJOR_FILTERING(all_mni_tractograms)
 
-    rois_folder = Channel.fromPath("${params.rois_folder}")
-    all_tractograms = all_tractograms.combine(rois_folder)
-    filtered_tractograms = MAJOR_FILTERING(all_tractograms)
+    // Extract plausible and unplausible streamlines
+    EXTRACT(filtered_tractograms.unplausible, filtered_tractograms.wb, data.sides, all_mni_tractograms)
 
-    // Start extracting bundles
-    EXTRACT(filtered_tractograms.unplausible, filtered_tractograms.wb, data.sides)
+    // Transform extracted tractograms to original space if needed
+    tractograms_to_transform = EXTRACT.out.plausible.concat(EXTRACT.out.unplausible)
+    
+    if (params.orig) {
+        TRANSFORM_TO_ORIG(data.t1s, tractograms_to_transform, transformed.transformations_for_orig)
+    }
 
-    // Make sure this works properly (at first test seemed to output invalid streamlines)
-    // TRANSFORM_TO_ORIG(data.t1s, transformed.tractograms, transformed.transformations_for_orig)
+    // Extract bundles
+    if (params.extract_bundles) {
+        EXTRACT_BUNDLES(EXTRACT.out.for_bundle_extraction)
+
+        if (params.orig) {
+            TRANSFORM_TO_ORIG(data.t1s, EXTRACT_BUNDLES.out.bundles, transformed.transformations_for_orig)
+        }
+    }
 }

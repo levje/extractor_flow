@@ -42,6 +42,7 @@ OPTIONAL ARGUMENTS (current value)
 
 AVAILABLE PROFILES (using -profile option (e.g. -profile macos,extract_bundles))
 
-macos                                   When this profile is used, ExtractorFlow will modify a parameter (scratch) for MacOS users.
+docker                                  When this profile is used, all processes will execute within Docker containers (recommended).
+apptainer                               When this profile is used, all processes will execute within Apptainer containers.
 fully_reproducible                      When this profile is used, all the parameters will be set to have 100% reproducible results.
-extract_bundles                         Extract bundles
+extract_bundles                         The flow will perform additional processing to extract all recognized bundles.

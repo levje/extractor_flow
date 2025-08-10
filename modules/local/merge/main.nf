@@ -1,0 +1,40 @@
+process TRACTOGRAM_MATH {
+  tag "$meta.id"
+  cpus 1
+
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
+        'scilus/scilus:1.6.0' }"
+
+  input:
+    tuple val(meta), val(side), path(in_tractograms)
+
+  output:
+    tuple val(meta), path("${out_path}"), emit: tractogram
+    
+  script:
+    operation = task.ext.op
+    out_name = task.ext.out_name ? task.ext.out_name : ""
+    out_suffix = task.ext.out_suffix ? task.ext.out_suffix : ""
+    save_empty = task.ext.save_empty ? task.ext.save_empty : false
+    force = task.ext.force ? task.ext.force : false
+
+    if (!operation) {
+        error 'Error ~ No operation specified for TRACTOGRAM_MATH process. Please set "op" in the task.ext configuration.'
+    }
+
+    save_empty_str = save_empty ? "--save_empty" : ""
+    force_str = force ? "-f" : ""
+
+    tractograms = in_tractograms.join(' ')
+    side_suffix = side ? "_${side}" : ""
+    out_path = "${meta.id}__${out_name}${side_suffix}${out_suffix}.trk"
+    """
+    scil_tractogram_math.py \
+        ${operation} \
+        ${tractograms} \
+        ${out_path} \
+        ${save_empty_str} \
+        ${force_str}
+    """
+}

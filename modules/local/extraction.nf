@@ -1,16 +1,10 @@
 include { FILTER_LIST as EXTRACT_FORNIX } from './filter_with_list/main.nf'
-
 include { FILTER_LIST as EXTRACT_EE_CEREBELLUM } from './filter_with_list/main.nf'
-include { FILTER_LIST as EXTRACT_PLAUSIBLE_CEREBELLUM } from './filter_with_list/main.nf'
-
 include { FILTER_LIST as EXTRACT_EE_BRAINSTEM } from './filter_with_list/main.nf'
-include { FILTER_LIST as EXTRACT_PLAUSIBLE_BRAINSTEM } from './filter_with_list/main.nf'
-
 include { FILTER_LIST as REMOVE_OUT_OF_CGM_DWM } from './filter_with_list/main.nf'
 include { FILTER_LIST as EXTRACT_ALL_COMMISSURAL } from './filter_with_list/main.nf'
 include { FILTER_LIST as EXTRACT_PLAUSIBLE_CC_CX } from './filter_with_list/main.nf'
 include { FILTER_LIST as EXTRACT_PLAUSIBLE_AC_CX } from './filter_with_list/main.nf'
-// include { FILTER_LIST as Extract_plausible_CC_BG } from './filter_with_list/main.nf'
 include { FILTER_LIST as SPLIT_NO_CC_ASSO_AND_BG } from './filter_with_list/main.nf'
 include { FILTER_LIST_EACH as SPLIT_BG_THAL } from './filter_with_list/main.nf'
 include { FILTER_LIST_EACH as SPLIT_BG_PUT } from './filter_with_list/main.nf'
@@ -27,12 +21,32 @@ include { FILTER_LIST_SIDE as ASSO_O_T } from './filter_with_list/main.nf'
 include { FILTER_LIST_SIDE as ASSO_INS } from './filter_with_list/main.nf'
 include { FILTER_LIST_SIDE as ASSO_CING } from './filter_with_list/main.nf'
 
+include { TRACTOGRAM_MATH as MERGE_BG_THAL } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_BG_PUT } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_BG_CAUD } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_CC_HOMOTOPIC } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_VENTRAL } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_DORSAL_F_P } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_DORSAL } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_P_O } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_P_T } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_O_T } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_INS } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_BE_FRONTAL_GYRUS } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_EE_FRONTAL_GYRUS } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_BE_OCCIPITAL_GYRUS } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_EE_OCCIPITAL_GYRUS } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_BE_PARIETAL_GYRUS } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_EE_PARIETAL_GYRUS } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_BE_TEMPORAL_GYRUS } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_EE_TEMPORAL_GYRUS } from './merge/main.nf'
 
 workflow EXTRACT {
   take:
     unplausible
     wb
     sides
+    mni_tractograms
 
   main:
     // Init channels with empty values as a default value for "each"
@@ -48,13 +62,13 @@ workflow EXTRACT {
     Cerebellum
     */
     EXTRACT_EE_CEREBELLUM(wb)
-    Extract_plausible_cerebellum(EXTRACT_EE_CEREBELLUM.out.remaining)
+    EXTRACT_PLAUSIBLE_CEREBELLUM(EXTRACT_EE_CEREBELLUM.out.remaining)
 
     /*
     Brainstem
     */
     EXTRACT_EE_BRAINSTEM(EXTRACT_EE_CEREBELLUM.out.extracted)
-    Extract_plausible_brainstem(EXTRACT_EE_BRAINSTEM.out.remaining)
+    EXTRACT_PLAUSIBLE_BRAINSTEM(EXTRACT_EE_BRAINSTEM.out.remaining)
 
     /*
     Brain - Either end in CGM SWM
@@ -63,7 +77,7 @@ workflow EXTRACT {
     EXTRACT_ALL_COMMISSURAL(REMOVE_OUT_OF_CGM_DWM.out.extracted)
     EXTRACT_PLAUSIBLE_CC_CX(EXTRACT_ALL_COMMISSURAL.out.remaining)
     EXTRACT_PLAUSIBLE_AC_CX(EXTRACT_ALL_COMMISSURAL.out.remaining)
-    Extract_plausible_CC_BG(EXTRACT_ALL_COMMISSURAL.out.remaining)
+    EXTRACT_PLAUSIBLE_CC_BG(EXTRACT_ALL_COMMISSURAL.out.remaining)
 
     /*
     Split not CC in asso BG and not BG
@@ -80,38 +94,42 @@ workflow EXTRACT {
     cugwm_for_combine = SPLIT_BG_THAL.out.extracted_with_side_list.filter{it[2]=='CuGWM'}
     lgwm_for_combine = SPLIT_BG_THAL.out.extracted_with_side_list.filter{it[2]=='LGWM'}
     optic_radiation_for_rename = cugwm_for_combine.concat(lgwm_for_combine).groupTuple(by:[0,1])
-    bg_ipsi_thal_list_for_merge = SPLIT_BG_THAL.out.extracted.groupTuple().map{it}
-    Merge_BG_Thal(bg_ipsi_thal_list_for_merge)
+    bg_ipsi_thal_list_for_merge = SPLIT_BG_THAL.out.extracted.groupTuple()
+      .map { sid, tractograms -> [sid, [], tractograms] }
+    MERGE_BG_THAL(bg_ipsi_thal_list_for_merge)
 
     /*
     BG PUT
     */
     SPLIT_BG_PUT(SPLIT_NO_CC_ASSO_AND_BG.out.extracted, bg_list, sides)
-    bg_ipsi_put_list_for_merge = SPLIT_BG_PUT.out.extracted.groupTuple().map{it}
-    Merge_BG_Put(bg_ipsi_put_list_for_merge)
+    bg_ipsi_put_list_for_merge = SPLIT_BG_PUT.out.extracted.groupTuple()
+      .map { sid, tractograms -> [sid, [], tractograms] }
+    MERGE_BG_PUT(bg_ipsi_put_list_for_merge)
 
     /*
     BG CAUD
     */
     bg_caud_list = params.bg_caud_lists?.tokenize(',')
     SPLIT_BG_CAUD(SPLIT_NO_CC_ASSO_AND_BG.out.extracted, bg_caud_list, sides)
-    bg_ipsi_caud_list_for_merge = SPLIT_BG_CAUD.out.extracted.groupTuple().map{it}
-    Merge_BG_Caud(bg_ipsi_caud_list_for_merge)
+    bg_ipsi_caud_list_for_merge = SPLIT_BG_CAUD.out.extracted.groupTuple()
+      .map { sid, tractograms -> [sid, [], tractograms] }
+    MERGE_BG_CAUD(bg_ipsi_caud_list_for_merge)
 
-    Split_asso_in_hemi(SPLIT_NO_CC_ASSO_AND_BG.out.remaining, empty_lists, sides)
+    SPLIT_ASSO_IN_HEMI(SPLIT_NO_CC_ASSO_AND_BG.out.remaining, empty_lists, sides)
     
     /*
     Extracting U-shaped and streamlines restricted to Cortical GM and removing them from asso
     */
-    Split_ushape_CGM_asso(Split_asso_in_hemi.out.asso_for_extract_u_shape)
+    SPLIT_USHAPE_CGM_ASSO(SPLIT_ASSO_IN_HEMI.out.asso_for_extract_u_shape)
 
     /*
     Extracting unplausible long-range association streamlines passing through subcortical structures (Cd, Put, GP, Thal, Amyg)
     */
-    REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO(Split_ushape_CGM_asso.out.asso_for_remove_long_range, empty_lists)
+    REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO(SPLIT_USHAPE_CGM_ASSO.out.asso_for_remove_long_range, empty_lists)
+
     asso_all_intra_inter = REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side
     asso_all_intra_inter_list = asso_all_intra_inter.groupTuple().map{it.flatten().toList()}
-    assoCGM_list = Split_ushape_CGM_asso.out.assoCGM.groupTuple().map{it.flatten().toList()}
+    assoCGM_list = SPLIT_USHAPE_CGM_ASSO.out.assoCGM.groupTuple().map{it.flatten().toList()}
 
     /*
     CC Homotopic
@@ -182,15 +200,16 @@ workflow EXTRACT {
     /*
     MERGE CC_Homotopic
     */
-    CC_Homotopic_list_for_merge = CC_HOMOTOPIC.out.extracted.groupTuple().map{it}
-    CC_Homotopic_merge(CC_Homotopic_list_for_merge)
+    CC_Homotopic_list_for_merge = CC_HOMOTOPIC.out.extracted.groupTuple()
+      .map { sid, tractograms -> [sid, [], tractograms] }
+    MERGE_CC_HOMOTOPIC(CC_Homotopic_list_for_merge)
 
     /*
     COMMISSURAL
     */
 
-    all_cc_for_commissural = EXTRACT_ALL_COMMISSURAL.out.remaining.join(EXTRACT_PLAUSIBLE_AC_CX.out.extracted).join(Extract_plausible_CC_BG.out.plausible).join(CC_Homotopic_merge.out.CC_homo_for_trk_plausible)
-    CC_all_commissural(all_cc_for_commissural)
+    all_cc_for_commissural = EXTRACT_ALL_COMMISSURAL.out.remaining.join(EXTRACT_PLAUSIBLE_AC_CX.out.extracted).join(EXTRACT_PLAUSIBLE_CC_BG.out.plausible).join(MERGE_CC_HOMOTOPIC.out.tractogram)
+    CC_ALL_COMMISSURAL(all_cc_for_commissural)
 
     /*
     ASSO VENTRAL
@@ -271,9 +290,9 @@ workflow EXTRACT {
     */
 
     asso_frontal_be_list=params.asso_frontal_be_lists?.tokenize(',')
-    Asso_be_frontal_gyrus(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_frontal_be_list)
+    ASSO_BE_FRONTAL_GYRUS(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_frontal_be_list)
 
-    asso_frontal_be_list_for_merge = Asso_be_frontal_gyrus.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
+    asso_frontal_be_list_for_merge = ASSO_BE_FRONTAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
     Merge_asso_be_frontal_gyrus(asso_frontal_be_list_for_merge)
 
     /*
@@ -290,9 +309,9 @@ workflow EXTRACT {
                                         ['IFG_PrCG', 110],
                                         ['IFG_FrOrbG', 60])
     asso_frontal_ee_for_extract = REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side.combine(asso_frontal_ee_list)
-    Asso_ee_frontal_gyrus(asso_frontal_ee_for_extract)
+    ASSO_EE_FRONTAL_GYRUS(asso_frontal_ee_for_extract)
 
-    asso_frontal_ee_list_for_merge = Asso_ee_frontal_gyrus.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
+    asso_frontal_ee_list_for_merge = ASSO_EE_FRONTAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
     Merge_asso_ee_frontal_gyrus(asso_frontal_ee_list_for_merge)
 
     /*
@@ -300,9 +319,9 @@ workflow EXTRACT {
     */
 
     asso_occipital_be_list = params.asso_occipital_be_lists?.tokenize(',')
-    Asso_be_occipital_gyrus(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_occipital_be_list)
+    ASSO_BE_OCCIPITAL_GYRUS(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_occipital_be_list)
 
-    asso_occipital_be_list_for_merge = Asso_be_occipital_gyrus.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
+    asso_occipital_be_list_for_merge = ASSO_BE_OCCIPITAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
     Merge_asso_be_occipital_gyrus(asso_occipital_be_list_for_merge)
 
     /*
@@ -311,9 +330,9 @@ workflow EXTRACT {
 
     asso_occipital_ee_list = Channel.from(['MOG_SOG', 60],['MOG_IOG', 50], ['MOG_CuG', 60], ['SOG_CuG', 30], ['CuG_LG', 60])
     asso_occipital_ee_for_extract = REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side.combine(asso_occipital_ee_list)
-    Asso_ee_occipital_gyrus(asso_occipital_ee_for_extract)
+    ASSO_EE_OCCIPITAL_GYRUS(asso_occipital_ee_for_extract)
 
-    asso_occipital_ee_list_for_merge = Asso_ee_occipital_gyrus.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
+    asso_occipital_ee_list_for_merge = ASSO_EE_OCCIPITAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
     Merge_asso_ee_occipital_gyrus(asso_occipital_ee_list_for_merge)
 
     /*
@@ -321,9 +340,9 @@ workflow EXTRACT {
     */
 
     asso_parietal_be_list = params.asso_parietal_be_lists?.tokenize(',')
-    Asso_be_parietal_gyrus(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_parietal_be_list)
+    ASSO_BE_PARIETAL_GYRUS(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_parietal_be_list)
 
-    asso_parietal_be_list_for_merge = Asso_be_parietal_gyrus.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
+    asso_parietal_be_list_for_merge = ASSO_BE_PARIETAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
     Merge_asso_be_parietal_gyrus(asso_parietal_be_list_for_merge)
 
     /*
@@ -332,18 +351,18 @@ workflow EXTRACT {
 
     asso_parietal_ee_list = Channel.from(['SPG_PoCG', 50], ['SPG_AG', 80], ['SPG_SMG', 70], ['SPG_PrCuG', 50], ['AG_PoCG', 10000], ['AG_SMG', 90], ['AG_PrCuG', 90] , ['SMG_PoCG', 60], ['SMG_PrCuG',100], ['PoCG_PrCuG', 80])
     asso_parietal_ee_for_extract = REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side.combine(asso_parietal_ee_list)
-    Asso_ee_parietal_gyrus(asso_parietal_ee_for_extract)
+    ASSO_EE_PARIETAL_GYRUS(asso_parietal_ee_for_extract)
 
-    asso_parietal_ee_list_for_merge = Asso_ee_parietal_gyrus.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
+    asso_parietal_ee_list_for_merge = ASSO_EE_PARIETAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
     Merge_asso_ee_parietal_gyrus(asso_parietal_ee_list_for_merge)
 
     /*
     BE ASSO TEMPORAL: extracting all streamlines with both ends in a temporal gyrus and merge (U-shape > 20 mm)
     */
     asso_temporal_be_list = params.asso_temporal_be_lists?.tokenize(',')
-    Asso_be_temporal_gyrus(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_temporal_be_list)
+    ASSO_BE_TEMPORAL_GYRUS(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_temporal_be_list)
 
-    asso_temporal_be_list_for_merge = Asso_be_temporal_gyrus.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
+    asso_temporal_be_list_for_merge = ASSO_BE_TEMPORAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
     Merge_asso_be_temporal_gyrus(asso_temporal_be_list_for_merge)
 
     /*
@@ -352,19 +371,56 @@ workflow EXTRACT {
 
     asso_temporal_ee_list = Channel.from(['STG_MTG', 60], ['STG_ITG',80], ['STG_Tpole',110], ['MTG_ITG',60], ['MTG_Tpole', 100000], ['ITG_Tpole', 60])
     asso_temporal_ee_for_extract = REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side.combine(asso_temporal_ee_list)
-    Asso_ee_temporal_gyrus(asso_temporal_ee_for_extract)
+    ASSO_EE_TEMPORAL_GYRUS(asso_temporal_ee_for_extract)
 
-    asso_temporal_ee_list_for_merge = Asso_ee_temporal_gyrus.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
+    asso_temporal_ee_list_for_merge = ASSO_EE_TEMPORAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
     Merge_asso_ee_temporal_gyrus(asso_temporal_ee_list_for_merge)
 
-    // merge_trk_plausible = fornix_for_trk_plausible.concat(cerebellum_for_trk_plausible,brainstem_for_trk_plausible,BG_ipsi_Thal_for_trk_plausible,BG_ipsi_Put_for_trk_plausible,BG_ipsi_Caud_for_trk_plausible,asso_u_shape_for_trk_plausible,CC_homo_for_trk_plausible,asso_all_dorsal_for_trk_plausible,asso_all_ventral_for_trk_plausible,all_P_O_for_trk_plausible,all_P_T_for_trk_plausible,all_O_T_for_trk_plausible,Ins_for_trk_plausible,Cing_for_trk_plausible,asso_all_intraF_be_for_trk_plausible,asso_all_intraF_ee_for_trk_plausible,asso_all_intraP_be_for_trk_plausible,asso_all_intraP_ee_for_trk_plausible,asso_all_intraO_be_for_trk_plausible,asso_all_intraO_ee_for_trk_plausible,asso_all_intraT_be_for_trk_plausible,asso_all_intraT_ee_for_trk_plausible, accx_for_trk_plausible, ccbg_for_trk_plausible).groupTuple(by: 0)
-    // Merge_trk_plausible(merge_trk_plausible)
+    /*
+    Extracting plausible streamlines
+    */
+    merge_trk_plausible = EXTRACT_FORNIX.out.extracted.concat(
+      EXTRACT_PLAUSIBLE_CEREBELLUM.out.plausible,
+      EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_for_trk_plausible,
+      MERGE_BG_THAL.out.tractogram,
+      MERGE_BG_PUT.out.tractogram,
+      MERGE_BG_CAUD.out.tractogram,
+      SPLIT_USHAPE_CGM_ASSO.out.asso_u_shape_for_trk_plausible,
+      MERGE_CC_HOMOTOPIC.out.tractogram,
+      Merge_asso_dorsal.out.asso_all_dorsal_for_trk_plausible,
+      Merge_asso_ventral.out.asso_all_ventral_for_trk_plausible,
+      Merge_p_o.out.all_P_O_for_trk_plausible,
+      Merge_p_t.out.all_P_T_for_trk_plausible,
+      Merge_o_t.out.all_O_T_for_trk_plausible,
+      Merge_ins.out.Ins_for_trk_plausible,
+      ASSO_CING.out.extracted,
+      Merge_asso_be_frontal_gyrus.out.extracted,
+      Merge_asso_ee_frontal_gyrus.out.asso_all_intraF_ee_for_trk_plausible,
+      Merge_asso_be_parietal_gyrus.out.asso_all_intraP_be_for_trk_plausible,
+      Merge_asso_ee_parietal_gyrus.out.asso_all_intraP_ee_for_trk_plausible,
+      Merge_asso_be_occipital_gyrus.out.asso_all_intraO_be_for_trk_plausible,
+      Merge_asso_ee_occipital_gyrus.out.asso_all_intraO_ee_for_trk_plausible,
+      Merge_asso_be_temporal_gyrus.out.asso_all_intraT_be_for_trk_plausible,
+      Merge_asso_ee_temporal_gyrus.out.asso_all_intraT_ee_for_trk_plausible,
+      EXTRACT_PLAUSIBLE_AC_CX.out.extracted,
+      EXTRACT_PLAUSIBLE_CC_BG.out.plausible
+    ).groupTuple(by: 0)
 
-    // for_trk_unplausible = trk_for_extract_unplausible.join(plausible_for_extract_unplausible)
-    // Extract_trk_unplausible(for_trk_unplausible)
+    TRK_PLAUSIBLE(merge_trk_plausible)
+
+    /*
+    Extracting unplausible streamlines
+    */
+    for_trk_unplausible = mni_tractograms.join(TRK_PLAUSIBLE.out.tractogram)
+    TRK_UNPLAUSIBLE(for_trk_unplausible)
+
+    emit:
+    plausible = TRK_PLAUSIBLE.out.tractogram
+    unplausible = TRK_UNPLAUSIBLE.out.tractogram
+    for_bundle_extraction = Channel.empty()
 }
 
-process Extract_plausible_cerebellum {
+process EXTRACT_PLAUSIBLE_CEREBELLUM {
   tag "$meta.id"
   cpus 1
 
@@ -401,7 +457,7 @@ process Extract_plausible_cerebellum {
   """
 }
 
-process Extract_plausible_brainstem {
+process EXTRACT_PLAUSIBLE_BRAINSTEM {
   tag "$meta.id"
   cpus 1
 
@@ -488,7 +544,7 @@ process Extract_plausible_brainstem {
   """
 }
 
-process Extract_plausible_CC_BG {
+process EXTRACT_PLAUSIBLE_CC_BG {
   tag "$meta.id"
   cpus 1
 
@@ -578,7 +634,7 @@ process Merge_BG_Caud {
   """
 }
 
-process Split_asso_in_hemi {
+process SPLIT_ASSO_IN_HEMI {
   tag "$meta.id"
   cpus 1
 
@@ -604,7 +660,7 @@ process Split_asso_in_hemi {
   """
 }
 
-process Split_ushape_CGM_asso {
+process SPLIT_USHAPE_CGM_ASSO {
   tag "$meta.id"
   cpus 1
 
@@ -679,7 +735,7 @@ script:
   """
 }
 
-process CC_all_commissural {
+process CC_ALL_COMMISSURAL {
   tag "$meta.id"
   cpus 1
 
@@ -847,7 +903,7 @@ process Merge_ins {
   """
 }
 
-process Asso_be_frontal_gyrus {
+process ASSO_BE_FRONTAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
@@ -892,9 +948,7 @@ process Merge_asso_be_frontal_gyrus{
   """
 }
 
-// TODO
-
-process Asso_ee_frontal_gyrus {
+process ASSO_EE_FRONTAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
@@ -941,7 +995,7 @@ process Merge_asso_ee_frontal_gyrus{
   """
 }
 
-process Asso_be_occipital_gyrus {
+process ASSO_BE_OCCIPITAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
@@ -987,7 +1041,7 @@ process Merge_asso_be_occipital_gyrus{
   """
 }
 
-process Asso_ee_occipital_gyrus {
+process ASSO_EE_OCCIPITAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
@@ -1018,9 +1072,7 @@ process Merge_asso_ee_occipital_gyrus{
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container "mrzarfir/scilus-tmp:1.6.0"
 
   input:
     tuple val(meta), val(side),  val(gyrus), path(tractogram) // from asso_occipital_ee_list_for_merge
@@ -1034,7 +1086,7 @@ process Merge_asso_ee_occipital_gyrus{
   """
 }
 
-process Asso_be_parietal_gyrus {
+process ASSO_BE_PARIETAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
@@ -1080,7 +1132,7 @@ process Merge_asso_be_parietal_gyrus{
   """
 }
 
-process Asso_ee_parietal_gyrus {
+process ASSO_EE_PARIETAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
@@ -1127,7 +1179,7 @@ process Merge_asso_ee_parietal_gyrus{
   """
 }
 
-process Asso_be_temporal_gyrus {
+process ASSO_BE_TEMPORAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
@@ -1173,7 +1225,7 @@ process Merge_asso_be_temporal_gyrus{
   """
 }
 
-process Asso_ee_temporal_gyrus {
+process ASSO_EE_TEMPORAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
@@ -1200,16 +1252,14 @@ process Asso_ee_temporal_gyrus {
   """
 }
 
-process Merge_asso_ee_temporal_gyrus{
+process Merge_asso_ee_temporal_gyrus {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container "mrzarfir/scilus-tmp:1.6.0"
 
   input:
-    tuple val(meta), val(side),  val(gyrus), path(tractogram) // from asso_temporal_ee_list_for_merge
+    tuple val(meta), val(side), val(gyrus), path(tractogram) // from asso_temporal_ee_list_for_merge
 
   output:
     tuple val(meta), path("${meta.id}_asso_all_intraT_ee_f_${side}.trk"), emit: asso_all_intraT_ee_for_trk_plausible
@@ -1220,7 +1270,7 @@ process Merge_asso_ee_temporal_gyrus{
   """
 }
 
-process Merge_trk_plausible {
+process TRK_PLAUSIBLE {
   tag "$meta.id"
   cpus 1
 
@@ -1241,7 +1291,7 @@ process Merge_trk_plausible {
   """
 }
 
-process Extract_trk_unplausible {
+process TRK_UNPLAUSIBLE {
   tag "$meta.id"
   cpus 1
 

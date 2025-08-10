@@ -7,7 +7,7 @@ process MAJOR_FILTERING {
         'scilus/scilus:2.1.0' }"
 
     input:
-      tuple val(meta), path(tractogram), path(rois_folder)
+      tuple val(meta), path(tractogram)
 
     output:
       tuple val(meta), path("${meta.id}__wb_clean01.trk"), emit: wb
@@ -20,14 +20,13 @@ process MAJOR_FILTERING {
             keep_intermediate_trk_flag="--save_intermediate_tractograms"
         }
     """
-      ls ${rois_folder}
       scil_tractogram_filter_by_anatomy.py ${tractogram} \
-        ${rois_folder}/${params.atlas.JHU_8} \
+        ${params.rois_folder}/${params.atlas.JHU_8} \
         ${meta.id} \
         --minL ${params.min_streamline_length} \
         --maxL ${params.max_streamline_length} \
         --angle ${params.loop_angle_threshold} \
-        --csf_bin ${rois_folder}/${params.atlas.csf} \
+        --csf_bin ${params.rois_folder}/${params.atlas.csf} \
         --processes ${params.processes_major_filtering} \
         --save_rejected \
         $keep_intermediate_trk_flag \

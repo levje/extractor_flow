@@ -5,9 +5,13 @@ include { BETCROP_ANTSBET } from '../../modules/nf-neuro/betcrop/antsbet/main'
 include { REGISTRATION_TRACTOGRAM } from '../../modules/nf-neuro/registration/tractogram/main.nf'
 include { REGISTRATION_TRACTOGRAM as REGISTRATION_TRACTOGRAM_ORIG } from '../../modules/nf-neuro/registration/tractogram/main.nf'
 
-process Copy_t1_to_orig{
-//   publishDir = params.final_output_orig_space
+process COPY_T1_TO_ORIG{
+  tag "$meta.id"
   cpus 1
+
+  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
+        'scilus/scilus:1.6.0' }"
 
   input:
     tuple val(meta), path(t1)
@@ -79,7 +83,6 @@ workflow TRANSFORM_TO_MNI {
     emit:
     tractograms = REGISTRATION_TRACTOGRAM.out.warped_tractogram
     transformations_for_orig = transformations_for_orig
-
 }
 
 workflow TRANSFORM_TO_ORIG {
@@ -89,25 +92,26 @@ workflow TRANSFORM_TO_ORIG {
     transformations     // Channel(sid, transfo, deformation)
 
     main:
-
-    trks_for_register = t1s
-        .join(trks)
-        .join(transformations)
-        .map { sid, t1, trk, transfo, deformation ->
-            [sid, t1, transfo, trk, [], deformation] }
-
+    t1s_and_transformations = t1s.join(transformations)
+    trks_for_register = trks.combine(t1s_and_transformations, by: 0)
+          .map{ sid, trk, t1, transfo, deformation ->
+            [sid, t1, transfo, trk, [], deformation]}
 
     // takes:
     // sid, trk, t1, transfo, inv_deformation, deformation
     REGISTRATION_TRACTOGRAM_ORIG(trks_for_register)
     
     // Copy the original T1w to the subject folder.
-
-    Copy_t1_to_orig(t1s)
+    COPY_T1_TO_ORIG(t1s)
 }
 
 process Remove_invalid_streamlines {
+    tag "$meta.id"
     cpus 1
+
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+          'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
+          'scilus/scilus:1.6.0' }"
 
     input:
     tuple val(meta), path(tractogram)
@@ -122,7 +126,12 @@ process Remove_invalid_streamlines {
 }
 
 process Copy_t1_atlas {
+    tag "$meta.id"
     cpus 1
+
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+          'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
+          'scilus/scilus:1.6.0' }"
 
     input:
       tuple val(meta), path(tractogram)
