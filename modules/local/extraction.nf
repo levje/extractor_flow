@@ -219,9 +219,10 @@ workflow EXTRACT {
     ASSO_VENTRAL(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_ventral_lists)
 
     asso_all_intra_inter_ventral_all_for_merge = ASSO_VENTRAL.out.extracted_with_side.groupTuple(by:[0,1]).map{it.flatten().toList()}
-    Merge_asso_ventral(asso_all_intra_inter_ventral_all_for_merge)
+      .map { sid, side, t1, t2, t3 -> [sid, side, [t1, t2, t3]] }
+    MERGE_ASSO_VENTRAL(asso_all_intra_inter_ventral_all_for_merge)
 
-    SPLIT_ASSO_VENTRAL_IFOF_UF(Merge_asso_ventral.out.asso_all_ventral_for_split_ifof_uf, empty_lists)
+    SPLIT_ASSO_VENTRAL_IFOF_UF(MERGE_ASSO_VENTRAL.out.tractogram_with_side, empty_lists)
 
     /*
     ASSO DORSAL
@@ -230,15 +231,16 @@ workflow EXTRACT {
     asso_dorsal_f_p_lists = params.asso_dorsal_f_p_lists?.tokenize(',')
     ASSO_DORSAL_F_P(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_dorsal_f_p_lists)
     asso_all_intra_inter_dorsal_f_p_list_for_merge = ASSO_DORSAL_F_P.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_asso_dorsal_f_p(asso_all_intra_inter_dorsal_f_p_list_for_merge)
+    MERGE_ASSO_DORSAL_F_P(asso_all_intra_inter_dorsal_f_p_list_for_merge)
 
     asso_dorsal_f_o_f_t_list=params.asso_dorsal_f_o_f_t_lists?.tokenize(',')
     ASSO_DORSAL_F_O_F_T(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_dorsal_f_o_f_t_list)
     asso_all_intra_inter_dorsal_all_f_T_for_rename = ASSO_DORSAL_F_O_F_T.out.extracted_with_list.filter{it[2]=='F_T_dorsal'}
     asso_all_intra_inter_dorsal_all_f_O_for_rename = ASSO_DORSAL_F_O_F_T.out.extracted_with_list.filter{it[2]=='F_O_dorsal'}
 
-    asso_all_intra_inter_dorsal_all_for_merge = Merge_asso_dorsal_f_p.out.asso_all_intra_inter_dorsal_all_f_p_for_merge.groupTuple(by:[0,1]).join(ASSO_DORSAL_F_O_F_T.out.extracted_with_side.groupTuple(by:[0,1]), by:[0,1]).map{it.flatten().toList()}
-    Merge_asso_dorsal(asso_all_intra_inter_dorsal_all_for_merge)
+    asso_all_intra_inter_dorsal_all_for_merge = MERGE_ASSO_DORSAL_F_P.out.tractogram_with_side.groupTuple(by:[0,1]).join(ASSO_DORSAL_F_O_F_T.out.extracted_with_side.groupTuple(by:[0,1]), by:[0,1]).map{it.flatten().toList()}
+      .map { sid, side, t1, t2, t3 -> [sid, side, [t1, t2, t3]] }
+    MERGE_ASSO_DORSAL(asso_all_intra_inter_dorsal_all_for_merge)
 
     /*
     ASSO P_O
@@ -248,7 +250,7 @@ workflow EXTRACT {
     ASSO_P_O(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_p_o_list)
 
     asso_intra_inter_p_o_list_for_merge = ASSO_P_O.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_p_o(asso_intra_inter_p_o_list_for_merge)
+    MERGE_P_O(asso_intra_inter_p_o_list_for_merge)
 
     /*
     ASSO P_T
@@ -258,7 +260,7 @@ workflow EXTRACT {
     ASSO_P_T(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_p_t_list)
 
     asso_intra_inter_p_t_list_for_merge = ASSO_P_T.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_p_t(asso_intra_inter_p_t_list_for_merge)
+    MERGE_P_T(asso_intra_inter_p_t_list_for_merge)
 
     /*
     ASSO O_T
@@ -268,7 +270,7 @@ workflow EXTRACT {
     ASSO_O_T(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_o_t_list)
 
     asso_intra_inter_o_t_list_for_merge = ASSO_O_T.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_o_t(asso_intra_inter_o_t_list_for_merge)
+    MERGE_O_T(asso_intra_inter_o_t_list_for_merge)
 
     /*
     ASSO Ins
@@ -278,7 +280,7 @@ workflow EXTRACT {
     ASSO_INS(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_ins_list)
 
     asso_intra_inter_ins_list_for_merge = ASSO_INS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_ins(asso_intra_inter_ins_list_for_merge)
+    MERGE_INS(asso_intra_inter_ins_list_for_merge)
 
     /*
     ASSO CING
@@ -292,8 +294,9 @@ workflow EXTRACT {
     asso_frontal_be_list=params.asso_frontal_be_lists?.tokenize(',')
     ASSO_BE_FRONTAL_GYRUS(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_frontal_be_list)
 
-    asso_frontal_be_list_for_merge = ASSO_BE_FRONTAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_asso_be_frontal_gyrus(asso_frontal_be_list_for_merge)
+    asso_frontal_be_list_for_merge = ASSO_BE_FRONTAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1])
+      .map { sid, side, _gyrus, tractograms -> [sid, side, tractograms]}
+    MERGE_ASSO_BE_FRONTAL_GYRUS(asso_frontal_be_list_for_merge)
 
     /*
     EE ASSO FRONTAL: extracting all streamlines with either ends in a frontal gyrus (U-shape > 20 mm)
@@ -311,8 +314,9 @@ workflow EXTRACT {
     asso_frontal_ee_for_extract = REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side.combine(asso_frontal_ee_list)
     ASSO_EE_FRONTAL_GYRUS(asso_frontal_ee_for_extract)
 
-    asso_frontal_ee_list_for_merge = ASSO_EE_FRONTAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_asso_ee_frontal_gyrus(asso_frontal_ee_list_for_merge)
+    asso_frontal_ee_list_for_merge = ASSO_EE_FRONTAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1])
+      .map { sid, side, _gyrus, tractograms -> [sid, side, tractograms]}
+    MERGE_ASSO_EE_FRONTAL_GYRUS(asso_frontal_ee_list_for_merge)
 
     /*
     BE ASSO OCCIPITAL: extracting all streamlines with both ends in a occipital gyrus (U-shape > 20 mm)
@@ -321,8 +325,9 @@ workflow EXTRACT {
     asso_occipital_be_list = params.asso_occipital_be_lists?.tokenize(',')
     ASSO_BE_OCCIPITAL_GYRUS(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_occipital_be_list)
 
-    asso_occipital_be_list_for_merge = ASSO_BE_OCCIPITAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_asso_be_occipital_gyrus(asso_occipital_be_list_for_merge)
+    asso_occipital_be_list_for_merge = ASSO_BE_OCCIPITAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1])
+      .map { sid, side, _gyrus, tractograms -> [sid, side, tractograms]}
+    MERGE_ASSO_BE_OCCIPITAL_GYRUS(asso_occipital_be_list_for_merge)
 
     /*
     EE ASSO OCCIPITAL: extracting all streamlines with either ends in a occipital gyrus (U-shape > 20 mm)
@@ -332,8 +337,9 @@ workflow EXTRACT {
     asso_occipital_ee_for_extract = REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side.combine(asso_occipital_ee_list)
     ASSO_EE_OCCIPITAL_GYRUS(asso_occipital_ee_for_extract)
 
-    asso_occipital_ee_list_for_merge = ASSO_EE_OCCIPITAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_asso_ee_occipital_gyrus(asso_occipital_ee_list_for_merge)
+    asso_occipital_ee_list_for_merge = ASSO_EE_OCCIPITAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1])
+      .map { sid, side, _gyrus, tractograms -> [sid, side, tractograms]}
+    MERGE_ASSO_EE_OCCIPITAL_GYRUS(asso_occipital_ee_list_for_merge)
 
     /*
     BE ASSO PARIETAL: extracting all streamlines with both ends in a parietal gyrus (U-shape > 20 mm)
@@ -342,8 +348,9 @@ workflow EXTRACT {
     asso_parietal_be_list = params.asso_parietal_be_lists?.tokenize(',')
     ASSO_BE_PARIETAL_GYRUS(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_parietal_be_list)
 
-    asso_parietal_be_list_for_merge = ASSO_BE_PARIETAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_asso_be_parietal_gyrus(asso_parietal_be_list_for_merge)
+    asso_parietal_be_list_for_merge = ASSO_BE_PARIETAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1])
+      .map { sid, side, _gyrus, tractograms -> [sid, side, tractograms]}
+    MERGE_ASSO_BE_PARIETAL_GYRUS(asso_parietal_be_list_for_merge)
 
     /*
     EE ASSO PARIETAL: extracting all streamlines with either ends in a parietal gyrus (U-shape > 20 mm)
@@ -353,8 +360,9 @@ workflow EXTRACT {
     asso_parietal_ee_for_extract = REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side.combine(asso_parietal_ee_list)
     ASSO_EE_PARIETAL_GYRUS(asso_parietal_ee_for_extract)
 
-    asso_parietal_ee_list_for_merge = ASSO_EE_PARIETAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_asso_ee_parietal_gyrus(asso_parietal_ee_list_for_merge)
+    asso_parietal_ee_list_for_merge = ASSO_EE_PARIETAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1])
+      .map { sid, side, _gyrus, tractograms -> [sid, side, tractograms]}
+    MERGE_ASSO_EE_PARIETAL_GYRUS(asso_parietal_ee_list_for_merge)
 
     /*
     BE ASSO TEMPORAL: extracting all streamlines with both ends in a temporal gyrus and merge (U-shape > 20 mm)
@@ -362,8 +370,9 @@ workflow EXTRACT {
     asso_temporal_be_list = params.asso_temporal_be_lists?.tokenize(',')
     ASSO_BE_TEMPORAL_GYRUS(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_temporal_be_list)
 
-    asso_temporal_be_list_for_merge = ASSO_BE_TEMPORAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_asso_be_temporal_gyrus(asso_temporal_be_list_for_merge)
+    asso_temporal_be_list_for_merge = ASSO_BE_TEMPORAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1])
+      .map { sid, side, _gyrus, tractograms -> [sid, side, tractograms]}
+    MERGE_ASSO_BE_TEMPORAL_GYRUS(asso_temporal_be_list_for_merge)
 
     /*
     EE ASSO TEMPORAL: extracting all streamlines with either ends in a temporal gyrus and merge (U-shape > 20 mm)
@@ -373,8 +382,9 @@ workflow EXTRACT {
     asso_temporal_ee_for_extract = REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side.combine(asso_temporal_ee_list)
     ASSO_EE_TEMPORAL_GYRUS(asso_temporal_ee_for_extract)
 
-    asso_temporal_ee_list_for_merge = ASSO_EE_TEMPORAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1]).map{it}
-    Merge_asso_ee_temporal_gyrus(asso_temporal_ee_list_for_merge)
+    asso_temporal_ee_list_for_merge = ASSO_EE_TEMPORAL_GYRUS.out.extracted_with_side.groupTuple(by:[0,1])
+      .map { sid, side, _gyrus, tractograms -> [sid, side, tractograms]}
+    MERGE_ASSO_EE_TEMPORAL_GYRUS(asso_temporal_ee_list_for_merge)
 
     /*
     Extracting plausible streamlines
@@ -382,28 +392,28 @@ workflow EXTRACT {
     merge_trk_plausible = EXTRACT_FORNIX.out.extracted.concat(
       EXTRACT_PLAUSIBLE_CEREBELLUM.out.plausible,
       EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_for_trk_plausible,
+      EXTRACT_PLAUSIBLE_AC_CX.out.extracted,
+      EXTRACT_PLAUSIBLE_CC_BG.out.plausible,
       MERGE_BG_THAL.out.tractogram,
       MERGE_BG_PUT.out.tractogram,
       MERGE_BG_CAUD.out.tractogram,
       SPLIT_USHAPE_CGM_ASSO.out.asso_u_shape_for_trk_plausible,
       MERGE_CC_HOMOTOPIC.out.tractogram,
-      Merge_asso_dorsal.out.asso_all_dorsal_for_trk_plausible,
-      Merge_asso_ventral.out.asso_all_ventral_for_trk_plausible,
-      Merge_p_o.out.all_P_O_for_trk_plausible,
-      Merge_p_t.out.all_P_T_for_trk_plausible,
-      Merge_o_t.out.all_O_T_for_trk_plausible,
-      Merge_ins.out.Ins_for_trk_plausible,
+      MERGE_ASSO_DORSAL.out.tractogram,
+      MERGE_ASSO_VENTRAL.out.tractogram,
+      MERGE_P_O.out.tractogram,
+      MERGE_P_T.out.tractogram,
+      MERGE_O_T.out.tractogram,
+      MERGE_INS.out.tractogram,
       ASSO_CING.out.extracted,
-      Merge_asso_be_frontal_gyrus.out.extracted,
-      Merge_asso_ee_frontal_gyrus.out.asso_all_intraF_ee_for_trk_plausible,
-      Merge_asso_be_parietal_gyrus.out.asso_all_intraP_be_for_trk_plausible,
-      Merge_asso_ee_parietal_gyrus.out.asso_all_intraP_ee_for_trk_plausible,
-      Merge_asso_be_occipital_gyrus.out.asso_all_intraO_be_for_trk_plausible,
-      Merge_asso_ee_occipital_gyrus.out.asso_all_intraO_ee_for_trk_plausible,
-      Merge_asso_be_temporal_gyrus.out.asso_all_intraT_be_for_trk_plausible,
-      Merge_asso_ee_temporal_gyrus.out.asso_all_intraT_ee_for_trk_plausible,
-      EXTRACT_PLAUSIBLE_AC_CX.out.extracted,
-      EXTRACT_PLAUSIBLE_CC_BG.out.plausible
+      MERGE_ASSO_BE_FRONTAL_GYRUS.out.tractogram,
+      MERGE_ASSO_EE_FRONTAL_GYRUS.out.tractogram,
+      MERGE_ASSO_BE_OCCIPITAL_GYRUS.out.tractogram,
+      MERGE_ASSO_EE_OCCIPITAL_GYRUS.out.tractogram,
+      MERGE_ASSO_BE_PARIETAL_GYRUS.out.tractogram,
+      MERGE_ASSO_EE_PARIETAL_GYRUS.out.tractogram,
+      MERGE_ASSO_BE_TEMPORAL_GYRUS.out.tractogram,
+      MERGE_ASSO_EE_TEMPORAL_GYRUS.out.tractogram
     ).groupTuple(by: 0)
 
     TRK_PLAUSIBLE(merge_trk_plausible)
@@ -574,66 +584,6 @@ process EXTRACT_PLAUSIBLE_CC_BG {
   """
 }
 
-process Merge_BG_Thal {
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), path(tractogram) //// from BG_ipsi_Thal_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}__BG_ipsi_Thal_all.trk"), emit: BG_ipsi_Thal_for_trk_plausible
-
-  script:
-  """
-  scil_tractogram_math.py union ${tractogram} ${meta.id}__BG_ipsi_Thal_all.trk --save_empty -f
-  """
-}
-
-process Merge_BG_Put {
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), path(tractogram) // from BG_ipsi_Put_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}__BG_ipsi_Put_all.trk"), emit: BG_ipsi_Put_for_trk_plausible
-
-  script:
-  """
-  scil_tractogram_math.py union ${tractogram} ${meta.id}__BG_ipsi_Put_all.trk --save_empty -f
-  """
-}
-
-process Merge_BG_Caud {
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), path(tractogram) // from BG_ipsi_Caud_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}__BG_ipsi_Caud_all.trk"), emit: BG_ipsi_Caud_for_trk_plausible
-
-  script:
-  """
-  scil_tractogram_math.py union ${tractogram} ${meta.id}__BG_ipsi_Caud_all.trk --save_empty -f
-  """
-}
-
 process SPLIT_ASSO_IN_HEMI {
   tag "$meta.id"
   cpus 1
@@ -715,26 +665,6 @@ process SPLIT_USHAPE_CGM_ASSO {
     """
 }
 
-process CC_Homotopic_merge {
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-input:
-  tuple val(meta), path(tractogram) // from CC_Homotopic_list_for_merge
-
-output:
-  tuple val(meta), path("${meta.id}__CC_homo.trk"), emit: CC_homo_for_trk_plausible//, CC_homo_for_renaming, cc_homo_for_commissural
-
-script:
-  """
-  scil_tractogram_math.py union ${tractogram} ${meta.id}__CC_homo.trk --save_empty
-  """
-}
-
 process CC_ALL_COMMISSURAL {
   tag "$meta.id"
   cpus 1
@@ -761,148 +691,6 @@ process CC_ALL_COMMISSURAL {
   """
 }
 
-process Merge_asso_ventral {
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side), path(trk01), path(trk02), path(trk03) // from asso_all_intra_inter_ventral_all_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}__asso_all_ventral_f_${side}.trk"), emit: asso_all_ventral_for_trk_plausible
-    tuple val(meta), val(side), path("${meta.id}__asso_all_ventral_f_${side}.trk"), emit: asso_all_ventral_for_split_ifof_uf
-
-  script:
-  """
-  scil_tractogram_math.py union ${trk01} ${trk02} ${trk03} ${meta.id}__asso_all_ventral_f_${side}.trk --save_empty -f
-  """
-}
-
-process Merge_asso_dorsal_f_p {
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side), path(tractogram) // from asso_all_intra_inter_dorsal_f_p_list_for_merge
-
-  output:
-    tuple val(meta), val(side), path("${meta.id}__asso_F_P_dorsal_f_${side}.trk"), emit: asso_all_intra_inter_dorsal_all_f_p_for_merge
-
-  script:
-  """
-  scil_tractogram_math.py union ${tractogram} ${meta.id}__asso_F_P_dorsal_f_${side}.trk --save_empty -f
-  """
-}
-
-process Merge_asso_dorsal {
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side), path(trk01), path(trk02), path(trk03) // from asso_all_intra_inter_dorsal_all_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}__asso_all_dorsal_f_${side}.trk"), emit: asso_all_dorsal_for_trk_plausible
-
-  script:
-  """
-  scil_tractogram_math.py union ${trk01} ${trk02} ${trk03} ${meta.id}__asso_all_dorsal_f_${side}.trk --save_empty -f
-  """
-}
-
-process Merge_p_o {
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side), path(tractogram) // from asso_intra_inter_p_o_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}__asso_all_P_O_f_${side}.trk"), emit: all_P_O_for_trk_plausible
-
-  script:
-  """
-  scil_tractogram_math.py union ${tractogram} ${meta.id}__asso_all_P_O_f_${side}.trk --save_empty -f
-  """
-}
-
-process Merge_p_t {
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side), path(tractogram) // from asso_intra_inter_p_t_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}__asso_all_P_T_f_${side}.trk"), emit: all_P_T_for_trk_plausible
-
-  script:
-  """
-  scil_tractogram_math.py union ${tractogram} ${meta.id}__asso_all_P_T_f_${side}.trk --save_empty -f
-  """
-}
-
-process Merge_o_t {
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side), path(tractogram) // from asso_intra_inter_o_t_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}__asso_all_O_T_f_${side}.trk"), emit: all_O_T_for_trk_plausible
-    tuple val(meta), val(side), path("${meta.id}__asso_all_O_T_f_${side}.trk"), emit: all_O_T_for_rename
-
-  script:
-  """
-  scil_tractogram_math.py union ${tractogram} ${meta.id}__asso_all_O_T_f_${side}.trk --save_empty -f
-  """
-}
-
-process Merge_ins {
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side), path(tractogram) // from asso_intra_inter_ins_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}__asso_all_Ins_f_${side}.trk"), emit: Ins_for_trk_plausible
-
-  script:
-  """
-  scil_tractogram_math.py union ${tractogram} ${meta.id}__asso_all_Ins_f_${side}.trk --save_empty -f
-  """
-}
-
 process ASSO_BE_FRONTAL_GYRUS {
   tag "$meta.id"
   cpus 1
@@ -924,27 +712,6 @@ process ASSO_BE_FRONTAL_GYRUS {
     --filtering_list ${params.FLF}ASSO_be_${gyrus}_${side}.txt -f
   scil_extract_ushape.py tmp.trk --minU 0.5 --maxU 1\
     ${meta.id}_asso_intra_be_frontal_${gyrus}_${side}_u.trk -f
-  """
-}
-
-process Merge_asso_be_frontal_gyrus{
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side), val(gyrus), path(tractogram) // from asso_frontal_be_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}_asso_all_intraF_be_f_${side}_u.trk"), emit: extracted
-
-  script:
-  """
-    scil_tractogram_math.py union ${tractogram}\
-      ${meta.id}_asso_all_intraF_be_f_${side}_u.trk --save_empty -f
   """
 }
 
@@ -975,26 +742,6 @@ process ASSO_EE_FRONTAL_GYRUS {
   """
 }
 
-process Merge_asso_ee_frontal_gyrus{
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side),  val(gyrus), path(tractogram) // from asso_frontal_ee_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}_asso_all_intraF_ee_f_${side}_u.trk"), emit: asso_all_intraF_ee_for_trk_plausible
-
-  script:
-  """
-    scil_tractogram_math.py union ${tractogram} ${meta.id}_asso_all_intraF_ee_f_${side}_u.trk --save_empty -f
-  """
-}
-
 process ASSO_BE_OCCIPITAL_GYRUS {
   tag "$meta.id"
   cpus 1
@@ -1018,26 +765,6 @@ process ASSO_BE_OCCIPITAL_GYRUS {
     --minU 0.5\
     --maxU 1\
     ${meta.id}_asso_intra_be_occipital_${gyrus}_${side}_u.trk -f
-  """
-}
-
-process Merge_asso_be_occipital_gyrus{
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side),  val(gyrus), path(tractogram) // from asso_occipital_be_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}_asso_all_intraO_be_f_${side}_u.trk"), emit: asso_all_intraO_be_for_trk_plausible
-
-  script:
-  """
-    scil_tractogram_math.py union ${tractogram} ${meta.id}_asso_all_intraO_be_f_${side}_u.trk --save_empty -f
   """
 }
 
@@ -1068,24 +795,6 @@ process ASSO_EE_OCCIPITAL_GYRUS {
   """
 }
 
-process Merge_asso_ee_occipital_gyrus{
-  tag "$meta.id"
-  cpus 1
-
-  container "mrzarfir/scilus-tmp:1.6.0"
-
-  input:
-    tuple val(meta), val(side),  val(gyrus), path(tractogram) // from asso_occipital_ee_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}_asso_all_intraO_ee_f_${side}_u.trk"), emit: asso_all_intraO_ee_for_trk_plausible
-
-  script:
-  """
-    scil_tractogram_math.py union ${tractogram} ${meta.id}_asso_all_intraO_ee_f_${side}_u.trk --save_empty -f
-  """
-}
-
 process ASSO_BE_PARIETAL_GYRUS {
   tag "$meta.id"
   cpus 1
@@ -1109,26 +818,6 @@ process ASSO_BE_PARIETAL_GYRUS {
     --minU 0.5\
     --maxU 1\
     ${meta.id}_asso_intra_be_parietal_${gyrus}_${side}_u.trk -f
-  """
-}
-
-process Merge_asso_be_parietal_gyrus{
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side),  val(gyrus), path(tractogram) // from asso_parietal_be_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}_asso_all_intraP_be_f_${side}_u.trk"), emit: asso_all_intraP_be_for_trk_plausible
-
-  script:
-  """
-    scil_tractogram_math.py union ${tractogram} ${meta.id}_asso_all_intraP_be_f_${side}_u.trk --save_empty -f
   """
 }
 
@@ -1159,26 +848,6 @@ process ASSO_EE_PARIETAL_GYRUS {
   """
 }
 
-process Merge_asso_ee_parietal_gyrus{
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side),  val(gyrus), path(tractogram) // from asso_parietal_ee_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}_asso_all_intraP_ee_f_${side}.trk"), emit: asso_all_intraP_ee_for_trk_plausible
-
-  script:
-  """
-    scil_tractogram_math.py union ${tractogram} ${meta.id}_asso_all_intraP_ee_f_${side}.trk --save_empty -f
-  """
-}
-
 process ASSO_BE_TEMPORAL_GYRUS {
   tag "$meta.id"
   cpus 1
@@ -1202,26 +871,6 @@ process ASSO_BE_TEMPORAL_GYRUS {
     --minU 0.5\
     --maxU 1\
     ${meta.id}_asso_intra_be_temporal_${gyrus}_${side}_u.trk -f
-  """
-}
-
-process Merge_asso_be_temporal_gyrus{
-  tag "$meta.id"
-  cpus 1
-
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
-
-  input:
-    tuple val(meta), val(side), val(gyrus), path(tractogram) // from asso_temporal_be_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}_asso_all_intraT_be_f_${side}_u.trk"), emit: asso_all_intraT_be_for_trk_plausible
-
-  script:
-  """
-    scil_tractogram_math.py union ${tractogram} ${meta.id}_asso_all_intraT_be_f_${side}_u.trk --save_empty -f
   """
 }
 
@@ -1249,24 +898,6 @@ process ASSO_EE_TEMPORAL_GYRUS {
     --minU 0.5\
     --maxU 1\
     ${meta.id}_asso_intra_ee_temporal_${gyrus}_${side}.trk -f
-  """
-}
-
-process Merge_asso_ee_temporal_gyrus {
-  tag "$meta.id"
-  cpus 1
-
-  container "mrzarfir/scilus-tmp:1.6.0"
-
-  input:
-    tuple val(meta), val(side), val(gyrus), path(tractogram) // from asso_temporal_ee_list_for_merge
-
-  output:
-    tuple val(meta), path("${meta.id}_asso_all_intraT_ee_f_${side}.trk"), emit: asso_all_intraT_ee_for_trk_plausible
-
-  script:
-  """
-    scil_tractogram_math.py union ${tractogram} ${meta.id}_asso_all_intraT_ee_f_${side}.trk --save_empty -f
   """
 }
 

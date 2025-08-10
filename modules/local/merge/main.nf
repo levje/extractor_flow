@@ -2,15 +2,14 @@ process TRACTOGRAM_MATH {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container "mrzarfir/scilus-tmp:1.6.0"
 
   input:
     tuple val(meta), val(side), path(in_tractograms)
 
   output:
     tuple val(meta), path("${out_path}"), emit: tractogram
+    tuple val(meta), val(side), path("${out_path}"), emit: tractogram_with_side
     
   script:
     operation = task.ext.op
@@ -36,5 +35,6 @@ process TRACTOGRAM_MATH {
         ${out_path} \
         ${save_empty_str} \
         ${force_str}
+    ls -lh
     """
 }
