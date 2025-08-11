@@ -1,4 +1,5 @@
 process COPY_FILE {
+  tag "${meta.id}"
   cpus 1
 
   input:
