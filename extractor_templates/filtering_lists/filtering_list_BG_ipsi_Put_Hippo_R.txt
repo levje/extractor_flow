@@ -1,3 +1,0 @@
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1704" either_end include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1068" either_end include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "801:807 1801:1807 1701:1703 1705:1707 1062 1091 1162 1521:1523 1551:1561 1581:1582 1584" any exclude

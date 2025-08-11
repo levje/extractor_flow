@@ -1,5 +1,0 @@
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "704" either_end include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "22 122" either_end include
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_PrCuGWM_stem_L.nii.gz any include
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_PrCuGWM_shell_L.nii.gz any exclude
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "801:807 1801:1807 701:703 705:707 23:26 41:42 61:68 123:126 141:142 161:165 521:523 551:556 558 560 581:583" any exclude

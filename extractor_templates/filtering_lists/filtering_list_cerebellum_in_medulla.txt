@@ -1,4 +1,0 @@
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "901:902 1901:1902" either_end include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "803 1803" either_end include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "901:906 1901:1906" both_ends exclude
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "707 1707 801:802 804:807 904:905 1801:1802 1804:1807 1904:1905" any exclude

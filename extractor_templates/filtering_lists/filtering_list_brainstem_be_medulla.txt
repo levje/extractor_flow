@@ -1,2 +1,0 @@
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "803 1803" both_ends include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "802 805:807 901 1802 1805:1807 1901" any exclude
