@@ -1,9 +1,0 @@
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "23:24 123:124" either_end include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1023:1024 1123:1124" either_end include
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_PoCGWM_stem_L.nii.gz any include
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_PoCGWM_stem_R.nii.gz any include
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_PoCGWM_shell_L.nii.gz any exclude
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_PoCGWM_shell_R.nii.gz any exclude
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "503:504 1503:1504" any include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "501:502 1501:1502 4:5 104:105 1004:1005 1104:1105 21 121 1021 1121 25:26 125:126 1025:1026 1125:1126 521:523 1521:1523" any exclude
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Ventricles_not_CC.nii.gz any exclude

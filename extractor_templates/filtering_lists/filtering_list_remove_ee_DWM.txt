@@ -1,1 +1,0 @@
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "501:590 1501:1590" either_end exclude

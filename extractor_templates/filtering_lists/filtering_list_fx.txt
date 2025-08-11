@@ -1,5 +1,0 @@
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "587:590 1587:1590" any include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "68 1068" either_end include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1:65 81 91 101:165 501:502 505 531:535 551:561 702:704 801:807 901:906 1001:1065 1081 1091 1101:1165 1501:1502 1505 1531:1535 1551:1561 1702:1704 1801:1807 1901:1906" any exclude
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Fx_not.nii.gz any exclude
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Ventricles.nii.gz either_end exclude

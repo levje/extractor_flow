@@ -1,9 +1,0 @@
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "65 165" either_end include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "1065 1165" either_end include
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_T_pole_gwm_stem_L.nii.gz any include
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_T_pole_gwm_stem_R.nii.gz any include
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_T_pole_gwm_shell_L.nii.gz any exclude
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_T_pole_gwm_shell_R.nii.gz any exclude
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "504 1504" any include
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "501:503 1501:1503" any exclude
-drawn_roi /extractor_flow/templates_and_ROIs/JHU_MNI_Ventricles_not_CC.nii.gz any exclude

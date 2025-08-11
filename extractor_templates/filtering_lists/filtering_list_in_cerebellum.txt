@@ -1,1 +1,0 @@
-atlas_roi /extractor_flow/templates_and_ROIs/JHU_template_v1.nii.gz "705:707 801:807 901:906 1705:1707 1801:1807 1901:1906" all include
