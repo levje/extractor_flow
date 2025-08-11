@@ -3,9 +3,8 @@ include { BETCROP_ANTSBET } from '../../modules/nf-neuro/betcrop/antsbet/main'
 
 // TODO: Replace the following processes with the NF-Neuro module REGISTRATION_TRACTOGRAM
 include { REGISTRATION_TRACTOGRAM } from '../../modules/nf-neuro/registration/tractogram/main.nf'
-include { REGISTRATION_TRACTOGRAM as REGISTRATION_TRACTOGRAM_ORIG } from '../../modules/nf-neuro/registration/tractogram/main.nf'
 
-process COPY_T1_TO_ORIG{
+process COPY_T1_TO_ORIG {
   tag "$meta.id"
   cpus 1
 
@@ -100,9 +99,6 @@ workflow TRANSFORM_TO_ORIG {
     // takes:
     // sid, trk, t1, transfo, inv_deformation, deformation
     REGISTRATION_TRACTOGRAM_ORIG(trks_for_register)
-    
-    // Copy the original T1w to the subject folder.
-    COPY_T1_TO_ORIG(t1s)
 }
 
 process Remove_invalid_streamlines {

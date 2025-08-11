@@ -41,6 +41,8 @@ include { TRACTOGRAM_MATH as MERGE_ASSO_EE_PARIETAL_GYRUS } from './merge/main.n
 include { TRACTOGRAM_MATH as MERGE_ASSO_BE_TEMPORAL_GYRUS } from './merge/main.nf'
 include { TRACTOGRAM_MATH as MERGE_ASSO_EE_TEMPORAL_GYRUS } from './merge/main.nf'
 
+include { EXTRACT_BUNDLES } from './extension.nf'
+
 workflow EXTRACT {
   take:
     unplausible
@@ -149,7 +151,8 @@ workflow EXTRACT {
     CC_LFOGWM_for_combine_frontal   = CC_HOMOTOPIC.out.extracted_with_list.filter{it[1]=='LFOGWM'}
     CC_PrCGWM_for_combine_frontal   = CC_HOMOTOPIC.out.extracted_with_list.filter{it[1]=='PrCGWM'}
     CC_RGGWM_for_combine_frontal    = CC_HOMOTOPIC.out.extracted_with_list.filter{it[1]=='RGGWM'}
-    CC_Homotopic_frontal_for_rename = CC_IFGWM_for_combine_frontal.concat(CC_SFGWM_for_combine_frontal).concat(CC_MFGWM_for_combine_frontal).concat(CC_MFOGWM_for_combine_frontal).concat(CC_LFOGWM_for_combine_frontal).concat(CC_PrCGWM_for_combine_frontal).concat(CC_RGGWM_for_combine_frontal).groupTuple(by:0)
+    CC_Homotopic_frontal_for_rename = CC_IFGWM_for_combine_frontal.concat(CC_SFGWM_for_combine_frontal).concat(CC_MFGWM_for_combine_frontal).concat(CC_MFOGWM_for_combine_frontal).concat(CC_LFOGWM_for_combine_frontal).concat(CC_PrCGWM_for_combine_frontal).concat(CC_RGGWM_for_combine_frontal).groupTuple(by:0).map{ it }
+    
 
     /*
     Filter + Concat occipital
@@ -183,7 +186,7 @@ workflow EXTRACT {
     CC_PrCuGWM_for_combine_parietal   = CC_HOMOTOPIC.out.extracted_with_list.filter{it[1]=='PrCuGWM'}
     CC_PoCGWM_for_combine_parietal    = CC_HOMOTOPIC.out.extracted_with_list.filter{it[1]=='PoCGWM'}
     CC_AGWM_for_combine_parietal      = CC_HOMOTOPIC.out.extracted_with_list.filter{it[1]=='AGWM'}
-    CC_Homotopic_parietal_for_rename = CC_SPGWM_for_combine_parietal.concat(CC_SMGWM_for_combine_parietal).concat(CC_PrCuGWM_for_combine_parietal).concat(CC_PoCGWM_for_combine_parietal).concat(CC_AGWM_for_combine_parietal).groupTuple(by:0)
+    CC_Homotopic_parietal_for_rename = CC_SPGWM_for_combine_parietal.concat(CC_SMGWM_for_combine_parietal).concat(CC_PrCuGWM_for_combine_parietal).concat(CC_PoCGWM_for_combine_parietal).concat(CC_AGWM_for_combine_parietal).groupTuple(by:0) 
 
 
     /*
@@ -235,8 +238,8 @@ workflow EXTRACT {
 
     asso_dorsal_f_o_f_t_list=params.asso_dorsal_f_o_f_t_lists?.tokenize(',')
     ASSO_DORSAL_F_O_F_T(REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO.out.extracted_with_side, asso_dorsal_f_o_f_t_list)
-    asso_all_intra_inter_dorsal_all_f_T_for_rename = ASSO_DORSAL_F_O_F_T.out.extracted_with_list.filter{it[2]=='F_T_dorsal'}
-    asso_all_intra_inter_dorsal_all_f_O_for_rename = ASSO_DORSAL_F_O_F_T.out.extracted_with_list.filter{it[2]=='F_O_dorsal'}
+    asso_all_intra_inter_dorsal_all_f_T_for_rename = ASSO_DORSAL_F_O_F_T.out.extracted_with_side_list.filter{it[2]=='F_T_dorsal'}
+    asso_all_intra_inter_dorsal_all_f_O_for_rename = ASSO_DORSAL_F_O_F_T.out.extracted_with_side_list.filter{it[2]=='F_O_dorsal'}
 
     asso_all_intra_inter_dorsal_all_for_merge = MERGE_ASSO_DORSAL_F_P.out.tractogram_with_side.groupTuple(by:[0,1]).join(ASSO_DORSAL_F_O_F_T.out.extracted_with_side.groupTuple(by:[0,1]), by:[0,1]).map{it.flatten().toList()}
       .map { sid, side, t1, t2, t3 -> [sid, side, [t1, t2, t3]] }
@@ -426,39 +429,49 @@ workflow EXTRACT {
 
     /* Pack up for bundle extraction */
     for_bundle_extraction = [
-      CC_Homotopic_frontal_for_rename: CC_Homotopic_frontal_for_rename,
-      CC_Homotopic_occipital_for_rename: CC_Homotopic_occipital_for_rename,
-      CC_Homotopic_temporal_for_rename: CC_Homotopic_temporal_for_rename,
-      CC_Homotopic_parietal_for_rename: CC_Homotopic_parietal_for_rename,
-      CC_Homotopic_insular_for_rename: CC_Homotopic_insular_for_rename,
-      CC_Homotopic_cingulum_for_rename: CC_Homotopic_cingulum_for_rename,
-      BG_ipsi_Caud_for_rename: SPLIT_BG_CAUD.out.extracted_with_side,
-      BG_ipsi_Put_for_rename: SPLIT_BG_PUT.out.extracted_with_side,
-      BG_ipsi_Thal_for_rename: bg_ipsi_thal_for_rename,
-      optic_radiation_for_rename: optic_radiation_for_rename,
-      asso_u_shape_for_rename: SPLIT_USHAPE_CGM_ASSO.out.asso_u_shape_for_rename,
-      Cing_for_rename: ASSO_CING.out.extracted_with_side,
-      asso_all_intra_inter_dorsal_all_f_O_for_rename: asso_all_intra_inter_dorsal_all_f_O_for_rename,
-      asso_all_intra_inter_dorsal_f_p_for_rename: ASSO_DORSAL_F_P.out.extracted_with_side_list,
-      asso_all_intra_inter_dorsal_all_f_T_for_rename: asso_all_intra_inter_dorsal_all_f_T_for_rename,
-      brainstem_corticopontine_frontal_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_corticopontine_frontal_for_rename,
-      brainstem_ee_corticopontine_parietotemporooccipital_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_ee_corticopontine_parietotemporooccipital_for_rename,
-      brainstem_pyramidal_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_pyramidal_for_rename,
-      fornix_for_rename: EXTRACT_FORNIX.out.extracted,
-      asso_IFOF_for_rename: SPLIT_ASSO_VENTRAL_IFOF_UF.out.extracted_with_side,
-      asso_UF_for_rename: SPLIT_ASSO_VENTRAL_IFOF_UF.out.remaining_with_side,
-      all_O_T_for_rename: MERGE_O_T.out.tractogram_with_side,
-      brainstem_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_for_trk_plausible,
-      cerebellum_for_rename: EXTRACT_PLAUSIBLE_CEREBELLUM.out.plausible,
-      accx_for_rename: EXTRACT_PLAUSIBLE_AC_CX.out.extracted,
-      plausible_commissural: CC_ALL_COMMISSURAL.out.plausible
+      key_CC_Homotopic_frontal_for_rename: CC_Homotopic_frontal_for_rename,
+      key_CC_Homotopic_occipital_for_rename: CC_Homotopic_occipital_for_rename,
+      key_CC_Homotopic_temporal_for_rename: CC_Homotopic_temporal_for_rename,
+      key_CC_Homotopic_parietal_for_rename: CC_Homotopic_parietal_for_rename,
+      key_CC_Homotopic_insular_for_rename: CC_Homotopic_insular_for_rename,
+      key_CC_Homotopic_cingulum_for_rename: CC_Homotopic_cingulum_for_rename,
+      key_BG_ipsi_Caud_for_rename: SPLIT_BG_CAUD.out.extracted_with_side,
+      key_BG_ipsi_Put_for_rename: SPLIT_BG_PUT.out.extracted_with_side,
+      key_BG_ipsi_Thal_for_rename: bg_ipsi_thal_for_rename,
+      key_optic_radiation_for_rename: optic_radiation_for_rename,
+      key_asso_u_shape_for_rename: SPLIT_USHAPE_CGM_ASSO.out.asso_u_shape_for_rename,
+      key_Cing_for_rename: ASSO_CING.out.extracted_with_side,
+      key_asso_all_intra_inter_dorsal_all_f_O_for_rename: asso_all_intra_inter_dorsal_all_f_O_for_rename,
+      key_asso_all_intra_inter_dorsal_f_p_for_rename: ASSO_DORSAL_F_P.out.extracted_with_side_list,
+      key_asso_all_intra_inter_dorsal_all_f_T_for_rename: asso_all_intra_inter_dorsal_all_f_T_for_rename,
+      key_brainstem_corticopontine_frontal_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_corticopontine_frontal_for_rename,
+      key_brainstem_ee_corticopontine_parietotemporooccipital_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_ee_corticopontine_parietotemporooccipital_for_rename,
+      key_brainstem_pyramidal_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_pyramidal_for_rename,
+      key_fornix_for_rename: EXTRACT_FORNIX.out.extracted,
+      key_asso_IFOF_for_rename: SPLIT_ASSO_VENTRAL_IFOF_UF.out.extracted_with_side,
+      key_asso_UF_for_rename: SPLIT_ASSO_VENTRAL_IFOF_UF.out.remaining_with_side,
+      key_all_O_T_for_rename: MERGE_O_T.out.tractogram_with_side,
+      key_brainstem_for_rename: EXTRACT_PLAUSIBLE_BRAINSTEM.out.brainstem_for_trk_plausible,
+      key_cerebellum_for_rename: EXTRACT_PLAUSIBLE_CEREBELLUM.out.plausible,
+      key_accx_for_rename: EXTRACT_PLAUSIBLE_AC_CX.out.extracted,
+      key_plausible_commissural: CC_ALL_COMMISSURAL.out.plausible
     ]
 
+    // TODO: Maybe move the following in the main.nf.
+    // However, it is problematic to do so with how
+    // nextflow seems to be handling the channels when
+    // emitting values. Needs more investigation.
+
+    extracted_bundles = Channel.empty()
+    if (params.extract_bundles) {
+      EXTRACT_BUNDLES(for_bundle_extraction, sides)
+      extracted_bundles = EXTRACT_BUNDLES.out.bundles
+    }
 
     emit:
     plausible = TRK_PLAUSIBLE.out.tractogram
     unplausible = TRK_UNPLAUSIBLE.out.tractogram
-    for_bundle_extraction
+    bundles = extracted_bundles
 }
 
 process EXTRACT_PLAUSIBLE_CEREBELLUM {

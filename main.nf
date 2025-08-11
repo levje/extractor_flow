@@ -6,10 +6,15 @@ params.help = false
 params.debug = true
 
 include { check_required_params; check_nb_cpus } from './modules/local/verify_inputs.nf'
-include { TRANSFORM_TO_MNI; TRANSFORM_TO_ORIG; CLEAN_IF_FROM_MNI } from './modules/local/transform.nf'
+include { TRANSFORM_TO_MNI; COPY_T1_TO_ORIG; TRANSFORM_TO_ORIG; CLEAN_IF_FROM_MNI } from './modules/local/transform.nf'
 include { MAJOR_FILTERING } from './modules/local/major_filtering.nf'
 include { EXTRACT } from './modules/local/extraction.nf'
 include { EXTRACT_BUNDLES } from './modules/local/extension.nf'
+
+include { TRACTOGRAM_MATH as RENAME_CORTICO_STRIATE } from './modules/local/merge/main.nf'
+
+include { REGISTRATION_TRACTOGRAM as REGISTER_TRACTOGRAM_ORIG } from './modules/nf-neuro/registration/tractogram/main.nf'
+include { REGISTRATION_TRACTOGRAM as REGISTER_BUNDLES_ORIG } from './modules/nf-neuro/registration/tractogram/main.nf'
 
 workflow get_data {
     main:
@@ -98,19 +103,26 @@ workflow {
     // Extract plausible and unplausible streamlines
     EXTRACT(filtered_tractograms.unplausible, filtered_tractograms.wb, data.sides, all_mni_tractograms)
 
-    // Transform extracted tractograms to original space if needed
-    tractograms_to_transform = EXTRACT.out.plausible.concat(EXTRACT.out.unplausible)
-    
     if (params.orig) {
-        TRANSFORM_TO_ORIG(data.t1s, tractograms_to_transform, transformed.transformations_for_orig)
-    }
+        // Register the tractograms to the original space
+        tractograms_to_transform = EXTRACT.out.plausible.concat(EXTRACT.out.unplausible)
+        
+        t1s_and_transformations = data.t1s.join(transformed.transformations_for_orig)
+        trks_for_register = tractograms_to_transform.combine(t1s_and_transformations, by: 0)
+            .map{ sid, trk, t1, transfo, deformation ->
+                [sid, t1, transfo, trk, [], deformation]}
+        REGISTER_TRACTOGRAM_ORIG(trks_for_register)
 
-    // Extract bundles
-    if (params.extract_bundles) {
-        EXTRACT_BUNDLES(EXTRACT.out.for_bundle_extraction, data.sides)
+        // Copy the original T1w to the subject folder.
+        COPY_T1_TO_ORIG(data.t1s)
 
-        if (params.orig) {
-            TRANSFORM_TO_ORIG(data.t1s, EXTRACT_BUNDLES.out.bundles, transformed.transformations_for_orig)
+        if (params.extract_bundles) {
+            // Register the extracted bundles to the original space
+            t1s_and_transformations = data.t1s.join(transformed.transformations_for_orig)
+            bundles_to_register = EXTRACT.out.bundles.combine(t1s_and_transformations, by: 0)
+                .map{ sid, trk, t1, transfo, deformation ->
+                    [sid, t1, transfo, trk, [], deformation]}
+            REGISTER_BUNDLES_ORIG(bundles_to_register)
         }
     }
 }
