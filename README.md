@@ -25,7 +25,7 @@ To get a complete list of the available arguments you can provide, always refer 
 nextflow run levje/nf-extractor --help
 ```
 1. **Download the templates folder.**  
-This pipeline requires templates files and multiple filtering lists that you should [download here]() (available soon) and extract into your directory of choice. You can do it manually, or simply paste the following command in the terminal:
+This pipeline requires templates files and multiple filtering lists that you should download [here](https://github.com/scilus/extractor_flow/raw/refs/heads/master/containers/filtering_lists.tar.bz2) and [here](https://github.com/scilus/extractor_flow/raw/refs/heads/master/containers/templates_and_ROIs.tar.bz2) and extract both into a single directory. You can do it manually, or simply paste the following commands in the terminal:
 ```bash
 # Download the tar files.
 wget https://github.com/scilus/extractor_flow/raw/refs/heads/master/containers/filtering_lists.tar.bz2 && wget https://github.com/scilus/extractor_flow/raw/refs/heads/master/containers/templates_and_ROIs.tar.bz2
@@ -49,8 +49,8 @@ The following example gives a general idea on what arguments you can provide. Th
 ```bash
 nextflow run levje/nf-extractor \  
     --input <input_folder> \  
-    --templates_dir <path to templates_folder> \ 
-    -profile docker 
+    --templates_dir <path/to/extractor_templates> \ 
+    -profile docker \  
     [--orig] 
     [--keep_intermediate_steps]
     [-resume] 
@@ -61,8 +61,8 @@ To use apptainer containers, you should only have to swap the profile used to `a
 ```bash
 nextflow run levje/nf-extractor \  
     --input <input_folder> \  
-    --templates_dir <path to templates_folder> \ 
-    -profile apptainer 
+    --templates_dir <path/to/extractor_templates> \ 
+    -profile apptainer \ 
     [--orig] 
     [--keep_intermediate_steps]
     [-resume] 
@@ -72,9 +72,9 @@ Notice, in the following example, the addition of the `extract_bundles` profile.
 ```bash
 nextflow run levje/nf-extractor \  
     --input <input_folder> \  
-    --templates_dir <path to templates_folder> \ 
-    -profile docker,extract_bundles
-    [--orig] 
-    [--keep_intermediate_steps]
-    [-resume] 
+    --templates_dir <path/to/extractor_templates> \ 
+    -profile docker,extract_bundles \ 
+    [--orig]  
+    [--keep_intermediate_steps]  
+    [-resume]
 ```
