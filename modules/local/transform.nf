@@ -80,25 +80,8 @@ workflow TRANSFORM_TO_MNI {
     }
 
     emit:
-    tractograms = REGISTRATION_TRACTOGRAM.out.warped_tractogram
+    tractograms = REGISTRATION_TRACTOGRAM.out.tractogram
     transformations_for_orig = transformations_for_orig
-}
-
-workflow TRANSFORM_TO_ORIG {
-    take:
-    t1s                 // Channel(sid, t1_orig_space)
-    trks                // Channel(sid, trk)
-    transformations     // Channel(sid, transfo, deformation)
-
-    main:
-    t1s_and_transformations = t1s.join(transformations)
-    trks_for_register = trks.combine(t1s_and_transformations, by: 0)
-          .map{ sid, trk, t1, transfo, deformation ->
-            [sid, t1, transfo, trk, [], deformation]}
-
-    // takes:
-    // sid, trk, t1, transfo, inv_deformation, deformation
-    REGISTRATION_TRACTOGRAM_ORIG(trks_for_register)
 }
 
 process Remove_invalid_streamlines {
