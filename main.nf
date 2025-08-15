@@ -6,7 +6,7 @@ params.help = false
 params.debug = true
 
 include { check_required_params; check_nb_cpus } from './modules/local/verify_inputs.nf'
-include { TRANSFORM_TO_MNI; COPY_T1_TO_ORIG; TRANSFORM_TO_ORIG; CLEAN_IF_FROM_MNI } from './modules/local/transform.nf'
+include { TRANSFORM_TO_MNI; COPY_T1_TO_ORIG; CLEAN_IF_FROM_MNI } from './modules/local/transform.nf'
 include { MAJOR_FILTERING } from './modules/local/major_filtering.nf'
 include { EXTRACT } from './modules/local/extraction.nf'
 include { EXTRACT_BUNDLES } from './modules/local/extension.nf'
