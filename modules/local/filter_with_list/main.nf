@@ -4,7 +4,7 @@ process FILTER_LIST {
 
   container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+        'mrzarfir/scilus-tmp:1.6.0' }"
 
   input:
     tuple val(meta), path(tractogram)
@@ -34,7 +34,7 @@ process FILTER_LIST_EACH {
 
   container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+        'mrzarfir/scilus-tmp:1.6.0' }"
 
   input:
     tuple val(meta), path(tractogram)
@@ -75,7 +75,7 @@ process FILTER_LIST_SIDE {
 
   container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+        'mrzarfir/scilus-tmp:1.6.0' }"
 
   input:
     tuple val(meta), val(side), path(tractogram)
