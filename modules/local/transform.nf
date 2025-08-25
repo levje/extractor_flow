@@ -51,7 +51,7 @@ workflow TRANSFORM_TO_MNI {
     }
 
     // Add the T1 template
-    template_t1 = Channel.fromPath("${params.rois_folder}${params.atlas.template}")
+    template_t1 = Channel.fromPath("${params.rois_folder_host}${params.atlas.template}")
     t1s_for_registration = beted_t1s
         .combine(template_t1) // Add the template T1
         .map { sid, t1, mask, template -> [sid, template, t1, mask] }
