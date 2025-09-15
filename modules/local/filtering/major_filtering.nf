@@ -2,9 +2,7 @@ process MAJOR_FILTERING {
     tag "$meta.id"
     cpus params.processes_major_filtering
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_2.1.0.sif':
-        'scilus/scilus:2.1.0' }"
+    container 'scilus/scilpy:dev'
 
     input:
       tuple val(meta), path(tractogram)
@@ -20,7 +18,7 @@ process MAJOR_FILTERING {
             keep_intermediate_trk_flag="--save_intermediate_tractograms"
         }
     """
-      scil_tractogram_filter_by_anatomy.py ${tractogram} \
+      scil_tractogram_filter_by_anatomy ${tractogram} \
         ${params.rois_folder}/${params.atlas.JHU_8} \
         ${meta.id} \
         --minL ${params.min_streamline_length} \

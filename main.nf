@@ -1,20 +1,60 @@
 #!/usr/bin/env nextflow
-nextflow.enable.dsl=2
+nextflow.enable.dsl = 2
 
 params.input = false
 params.help = false
 params.debug = true
 
-include { check_required_params; check_nb_cpus } from './modules/local/verify_inputs.nf'
-include { TRANSFORM_TO_MNI; COPY_T1_TO_ORIG; CLEAN_IF_FROM_MNI } from './modules/local/transform.nf'
-include { MAJOR_FILTERING } from './modules/local/major_filtering.nf'
-include { EXTRACT } from './modules/local/extraction.nf'
-include { EXTRACT_BUNDLES } from './modules/local/extension.nf'
+// Subworkflows
+include { TRANSFORM_TO_MNI; COPY_T1_TO_ORIG; CLEAN_IF_FROM_MNI } from './subworkflows/local/transform.nf'
+include { EXTRACT } from './subworkflows/local/extraction.nf'
+include { EXTRACT_BUNDLES } from './subworkflows/local/extension.nf'
 
+// Local modules
 include { TRACTOGRAM_MATH as RENAME_CORTICO_STRIATE } from './modules/local/merge/main.nf'
+include { MAJOR_FILTERING } from './modules/local/filtering/major_filtering.nf'
 
+// NF-Neuro modules
 include { REGISTRATION_TRACTOGRAM as REGISTER_TRACTOGRAM_ORIG } from './modules/nf-neuro/registration/tractogram/main.nf'
 include { REGISTRATION_TRACTOGRAM as REGISTER_BUNDLES_ORIG } from './modules/nf-neuro/registration/tractogram/main.nf'
+
+workflow {
+    // ** Now call your input workflow to fetch your files ** //
+    data = get_data()
+
+    transformed = TRANSFORM_TO_MNI(data.tractograms, data.t1s)
+    cleaned_tractograms = CLEAN_IF_FROM_MNI(data.tractograms, data.t1s)
+    all_mni_tractograms = cleaned_tractograms.cleaned_mni_tractograms.mix(transformed.tractograms)
+
+    // Major filtering
+    filtered_tractograms = MAJOR_FILTERING(all_mni_tractograms)
+
+    // Extract plausible and unplausible streamlines
+    EXTRACT(filtered_tractograms.unplausible, filtered_tractograms.wb, data.sides, all_mni_tractograms)
+
+    if (params.orig) {
+        // Register the tractograms to the original space
+        tractograms_to_transform = EXTRACT.out.plausible.concat(EXTRACT.out.unplausible)
+        
+        t1s_and_transformations = data.t1s.join(transformed.transformations_for_orig)
+        trks_for_register = tractograms_to_transform.combine(t1s_and_transformations, by: 0)
+            .map{ sid, trk, t1, transfo, deformation ->
+                [sid, t1, transfo, trk, [], deformation]}
+        REGISTER_TRACTOGRAM_ORIG(trks_for_register)
+
+        // Copy the original T1w to the subject folder.
+        COPY_T1_TO_ORIG(data.t1s)
+
+        if (params.extract_bundles) {
+            // Register the extracted bundles to the original space
+            t1s_and_transformations = data.t1s.join(transformed.transformations_for_orig)
+            bundles_to_register = EXTRACT.out.bundles.combine(t1s_and_transformations, by: 0)
+                .map{ sid, trk, t1, transfo, deformation ->
+                    [sid, t1, transfo, trk, [], deformation]}
+            REGISTER_BUNDLES_ORIG(bundles_to_register)
+        }
+    }
+}
 
 workflow get_data {
     main:
@@ -89,40 +129,29 @@ workflow get_data {
         sides = sides
 }
 
-workflow {
-    // ** Now call your input workflow to fetch your files ** //
-    data = get_data()
+def check_required_params(param_names) {
+    // Loop through each parameter name and check if it exists in params
+    // We need to accumulate errors to report them all at once
+    def missing_params = []
+    param_names.each { param ->
+        if (!params.containsKey(param) || params[param] == false || params[param] == '' || params[param] == null) {
+            missing_params << param
+        }
+    }
 
-    transformed = TRANSFORM_TO_MNI(data.tractograms, data.t1s)
-    cleaned_tractograms = CLEAN_IF_FROM_MNI(data.tractograms, data.t1s)
-    all_mni_tractograms = cleaned_tractograms.cleaned_mni_tractograms.mix(transformed.tractograms)
+    if (missing_params) {
+        throw new Exception("Missing required parameters: ${missing_params.join(', ')}")
+    }
+}
 
-    // Major filtering
-    filtered_tractograms = MAJOR_FILTERING(all_mni_tractograms)
-
-    // Extract plausible and unplausible streamlines
-    EXTRACT(filtered_tractograms.unplausible, filtered_tractograms.wb, data.sides, all_mni_tractograms)
-
-    if (params.orig) {
-        // Register the tractograms to the original space
-        tractograms_to_transform = EXTRACT.out.plausible.concat(EXTRACT.out.unplausible)
-        
-        t1s_and_transformations = data.t1s.join(transformed.transformations_for_orig)
-        trks_for_register = tractograms_to_transform.combine(t1s_and_transformations, by: 0)
-            .map{ sid, trk, t1, transfo, deformation ->
-                [sid, t1, transfo, trk, [], deformation]}
-        REGISTER_TRACTOGRAM_ORIG(trks_for_register)
-
-        // Copy the original T1w to the subject folder.
-        COPY_T1_TO_ORIG(data.t1s)
-
-        if (params.extract_bundles) {
-            // Register the extracted bundles to the original space
-            t1s_and_transformations = data.t1s.join(transformed.transformations_for_orig)
-            bundles_to_register = EXTRACT.out.bundles.combine(t1s_and_transformations, by: 0)
-                .map{ sid, trk, t1, transfo, deformation ->
-                    [sid, t1, transfo, trk, [], deformation]}
-            REGISTER_BUNDLES_ORIG(bundles_to_register)
+def check_nb_cpus() {
+    if(params.processes) {
+        if(params.processes > Runtime.runtime.availableProcessors()) {
+            throw new RuntimeException("Number of processes higher than available CPUs.")
+        }
+        else if(params.processes < 1) {
+            throw new RuntimeException("When set, number of processes must be >= 1 " +
+                                    "and smaller or equal to the number of CPUs.")
         }
     }
 }

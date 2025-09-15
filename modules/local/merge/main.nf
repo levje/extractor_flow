@@ -2,7 +2,7 @@ process TRACTOGRAM_MATH {
   tag "$meta.id"
   cpus 1
 
-  container "mrzarfir/scilus-tmp:1.6.0"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), val(side), path(in_tractograms)
@@ -29,7 +29,7 @@ process TRACTOGRAM_MATH {
     side_suffix = side ? "_${side}" : ""
     out_path = "${meta.id}__${out_name}${side_suffix}${out_suffix}.trk"
     """
-    scil_tractogram_math.py \
+    scil_tractogram_math \
         ${operation} \
         ${tractograms} \
         ${out_path} \

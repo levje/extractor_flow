@@ -8,9 +8,7 @@ process COPY_T1_TO_ORIG {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), path(t1)
@@ -88,9 +86,7 @@ process Remove_invalid_streamlines {
     tag "$meta.id"
     cpus 1
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-          'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-          'scilus/scilus:1.6.0' }"
+    container 'scilus/scilpy:dev'
 
     input:
     tuple val(meta), path(tractogram)
@@ -100,7 +96,7 @@ process Remove_invalid_streamlines {
 
     script:
     """
-      scil_remove_invalid_streamlines.py ${tractogram} ${meta.id}__rm_invalid_streamlines.trk --cut_invalid --remove_single_point -f
+      scil_tractogram_remove_invalid ${tractogram} ${meta.id}__rm_invalid_streamlines.trk --cut_invalid --remove_single_point -f
     """
 }
 
@@ -108,9 +104,7 @@ process Copy_t1_atlas {
     tag "$meta.id"
     cpus 1
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-          'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-          'scilus/scilus:1.6.0' }"
+    container 'scilus/scilpy:dev'
 
     input:
       tuple val(meta), path(tractogram)

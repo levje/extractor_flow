@@ -16,22 +16,22 @@ echo "==============================="
 
 if [ "${distance}" = "0" ]
 then
-scil_tractogram_filter_by_roi.py ${tractogram} ${basename}__${out_extension}.trk \
+scil_tractogram_filter_by_roi ${tractogram} ${basename}__${out_extension}.trk \
     --filtering_list ${filtering_list} ${extract_masks} -f \
     --display_count  > ${basename}__${out_extension}.txt;
 else
-scil_tractogram_filter_by_roi.py ${tractogram} ${basename}__${out_extension}.trk \
+scil_tractogram_filter_by_roi ${tractogram} ${basename}__${out_extension}.trk \
     --filtering_list ${filtering_list} ${extract_masks} -f \
      --overwrite_distance both_ends include ${distance} --overwrite_distance either_end include ${distance} --display_count  > ${basename}__${out_extension}.txt;
 fi
 
 if [ "${keep}" = "true" ]
 then
-    scil_tractogram_math.py difference ${tractogram} \
+    scil_tractogram_math difference ${tractogram} \
                                         ${basename}__${out_extension}.trk \
                                         ${basename}__${remaining_extension}.trk \
                                         --save_empty;
-    scil_tractogram_count_streamlines.py ${basename}__${remaining_extension}.trk > ${basename}__${remaining_extension}.txt;
+    scil_tractogram_count_streamlines ${basename}__${remaining_extension}.trk > ${basename}__${remaining_extension}.txt;
 fi
 
 echo "Done."

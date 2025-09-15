@@ -2,9 +2,7 @@ process FILTER_LIST {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'mrzarfir/scilus-tmp:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), path(tractogram)
@@ -23,7 +21,7 @@ process FILTER_LIST {
     extract_masks       = ""
     distance            = task.ext.distance
 
-    template "old_filter_with_list.sh"
+    template "filter_with_list.sh"
 }
 
 // This is the same as above, except that it supports input repeater for lists
@@ -32,9 +30,7 @@ process FILTER_LIST_EACH {
   tag "${meta.id}"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'mrzarfir/scilus-tmp:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), path(tractogram)
@@ -65,7 +61,7 @@ process FILTER_LIST_EACH {
     extract_masks       = ""
     distance            = task.ext.distance
 
-    template "old_filter_with_list.sh"
+    template "filter_with_list.sh"
 }
 
 // This is the same as above, except that it takes a side as an input.
@@ -73,9 +69,7 @@ process FILTER_LIST_SIDE {
   tag "${meta.id}"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'mrzarfir/scilus-tmp:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), val(side), path(tractogram)
@@ -105,7 +99,7 @@ process FILTER_LIST_SIDE {
     extract_masks       = ""
     distance            = task.ext.distance
 
-    template "old_filter_with_list.sh"
+    template "filter_with_list.sh"
 }
 
 def addSuffixToFile(str, suffix) {
