@@ -1,45 +1,45 @@
-include { FILTER_LIST as EXTRACT_FORNIX } from './filter_with_list/main.nf'
-include { FILTER_LIST as EXTRACT_EE_CEREBELLUM } from './filter_with_list/main.nf'
-include { FILTER_LIST as EXTRACT_EE_BRAINSTEM } from './filter_with_list/main.nf'
-include { FILTER_LIST as REMOVE_OUT_OF_CGM_DWM } from './filter_with_list/main.nf'
-include { FILTER_LIST as EXTRACT_ALL_COMMISSURAL } from './filter_with_list/main.nf'
-include { FILTER_LIST as EXTRACT_PLAUSIBLE_CC_CX } from './filter_with_list/main.nf'
-include { FILTER_LIST as EXTRACT_PLAUSIBLE_AC_CX } from './filter_with_list/main.nf'
-include { FILTER_LIST as SPLIT_NO_CC_ASSO_AND_BG } from './filter_with_list/main.nf'
-include { FILTER_LIST_EACH as SPLIT_BG_THAL } from './filter_with_list/main.nf'
-include { FILTER_LIST_EACH as SPLIT_BG_PUT } from './filter_with_list/main.nf'
-include { FILTER_LIST_EACH as SPLIT_BG_CAUD } from './filter_with_list/main.nf'
-include { FILTER_LIST_SIDE as REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO } from './filter_with_list/main.nf'
-include { FILTER_LIST_EACH as CC_HOMOTOPIC } from './filter_with_list/main.nf'
-include { FILTER_LIST_SIDE as ASSO_VENTRAL } from './filter_with_list/main.nf'
-include { FILTER_LIST_SIDE as SPLIT_ASSO_VENTRAL_IFOF_UF } from './filter_with_list/main.nf'
-include { FILTER_LIST_SIDE as ASSO_DORSAL_F_P } from './filter_with_list/main.nf'
-include { FILTER_LIST_SIDE as ASSO_DORSAL_F_O_F_T } from './filter_with_list/main.nf'
-include { FILTER_LIST_SIDE as ASSO_P_O } from './filter_with_list/main.nf'
-include { FILTER_LIST_SIDE as ASSO_P_T } from './filter_with_list/main.nf'
-include { FILTER_LIST_SIDE as ASSO_O_T } from './filter_with_list/main.nf'
-include { FILTER_LIST_SIDE as ASSO_INS } from './filter_with_list/main.nf'
-include { FILTER_LIST_SIDE as ASSO_CING } from './filter_with_list/main.nf'
+include { FILTER_LIST as EXTRACT_FORNIX } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST as EXTRACT_EE_CEREBELLUM } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST as EXTRACT_EE_BRAINSTEM } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST as REMOVE_OUT_OF_CGM_DWM } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST as EXTRACT_ALL_COMMISSURAL } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST as EXTRACT_PLAUSIBLE_CC_CX } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST as EXTRACT_PLAUSIBLE_AC_CX } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST as SPLIT_NO_CC_ASSO_AND_BG } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_EACH as SPLIT_BG_THAL } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_EACH as SPLIT_BG_PUT } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_EACH as SPLIT_BG_CAUD } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_SIDE as REMOVE_UNPLAUSIBLE_LONG_RANGE_ASSO } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_EACH as CC_HOMOTOPIC } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_SIDE as ASSO_VENTRAL } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_SIDE as SPLIT_ASSO_VENTRAL_IFOF_UF } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_SIDE as ASSO_DORSAL_F_P } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_SIDE as ASSO_DORSAL_F_O_F_T } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_SIDE as ASSO_P_O } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_SIDE as ASSO_P_T } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_SIDE as ASSO_O_T } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_SIDE as ASSO_INS } from '../../modules/local/filtering/filter_with_list.nf'
+include { FILTER_LIST_SIDE as ASSO_CING } from '../../modules/local/filtering/filter_with_list.nf'
 
-include { TRACTOGRAM_MATH as MERGE_BG_THAL } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_BG_PUT } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_BG_CAUD } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_CC_HOMOTOPIC } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_ASSO_VENTRAL } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_ASSO_DORSAL_F_P } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_ASSO_DORSAL } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_P_O } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_P_T } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_O_T } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_INS } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_ASSO_BE_FRONTAL_GYRUS } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_ASSO_EE_FRONTAL_GYRUS } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_ASSO_BE_OCCIPITAL_GYRUS } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_ASSO_EE_OCCIPITAL_GYRUS } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_ASSO_BE_PARIETAL_GYRUS } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_ASSO_EE_PARIETAL_GYRUS } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_ASSO_BE_TEMPORAL_GYRUS } from './merge/main.nf'
-include { TRACTOGRAM_MATH as MERGE_ASSO_EE_TEMPORAL_GYRUS } from './merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_BG_THAL } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_BG_PUT } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_BG_CAUD } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_CC_HOMOTOPIC } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_VENTRAL } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_DORSAL_F_P } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_DORSAL } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_P_O } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_P_T } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_O_T } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_INS } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_BE_FRONTAL_GYRUS } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_EE_FRONTAL_GYRUS } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_BE_OCCIPITAL_GYRUS } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_EE_OCCIPITAL_GYRUS } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_BE_PARIETAL_GYRUS } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_EE_PARIETAL_GYRUS } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_BE_TEMPORAL_GYRUS } from '../../modules/local/merge/main.nf'
+include { TRACTOGRAM_MATH as MERGE_ASSO_EE_TEMPORAL_GYRUS } from '../../modules/local/merge/main.nf'
 
 include { EXTRACT_BUNDLES } from './extension.nf'
 
@@ -478,9 +478,7 @@ process EXTRACT_PLAUSIBLE_CEREBELLUM {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), path(tractogram) // from ee_cerebellum_for_extract_plausible
@@ -495,19 +493,19 @@ process EXTRACT_PLAUSIBLE_CEREBELLUM {
 
   script:
   """
-  scil_filter_tractogram.py ${tractogram} ${meta.id}__tmp_in_cerebellum.trk\
+  scil_tractogram_filter_by_roi ${tractogram} ${meta.id}__tmp_in_cerebellum.trk\
         --filtering_list ${params.FLF}in_cerebellum.txt -f
-  scil_filter_tractogram.py ${meta.id}__tmp_in_cerebellum.trk ${meta.id}__all_in_cerebellum_nocx_nocerebwm.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__tmp_in_cerebellum.trk ${meta.id}__all_in_cerebellum_nocx_nocerebwm.trk\
         --filtering_list ${params.FLF}cerebellum_nocx_in_cereb.txt -f
-  scil_filter_tractogram.py ${meta.id}__tmp_in_cerebellum.trk ${meta.id}__all_in_cerebellum_in_Medulla.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__tmp_in_cerebellum.trk ${meta.id}__all_in_cerebellum_in_Medulla.trk\
         --filtering_list ${params.FLF}cerebellum_in_medulla.txt -f
-  scil_filter_tractogram.py ${meta.id}__tmp_in_cerebellum.trk ${meta.id}__all_in_cerebellum_in_Pons.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__tmp_in_cerebellum.trk ${meta.id}__all_in_cerebellum_in_Pons.trk\
         --filtering_list ${params.FLF}cerebellum_in_pons.txt -f
-  scil_filter_tractogram.py ${meta.id}__tmp_in_cerebellum.trk ${meta.id}__all_in_cerebellum_in_Midbrain.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__tmp_in_cerebellum.trk ${meta.id}__all_in_cerebellum_in_Midbrain.trk\
         --filtering_list ${params.FLF}cerebellum_in_midbrain.txt -f
-  scil_filter_tractogram.py ${meta.id}__tmp_in_cerebellum.trk ${meta.id}__all_in_cerebellum_in_redN_and_Thal.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__tmp_in_cerebellum.trk ${meta.id}__all_in_cerebellum_in_redN_and_Thal.trk\
         --filtering_list ${params.FLF}cerebellum_in_rednucleus_and_thalamus.txt -f
-  scil_tractogram_math.py union ${meta.id}__all_in_*.trk ${meta.id}__all_cerebellum_plausibles.trk --save_empty -f
+  scil_tractogram_math union ${meta.id}__all_in_*.trk ${meta.id}__all_cerebellum_plausibles.trk --save_empty -f
   """
 }
 
@@ -515,9 +513,7 @@ process EXTRACT_PLAUSIBLE_BRAINSTEM {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), path(tractogram) // from all_brainstem_for_extract_plausible
@@ -537,63 +533,63 @@ process EXTRACT_PLAUSIBLE_BRAINSTEM {
   script:
   """
   # Extract be midbrain
-  scil_filter_tractogram.py ${meta.id}__all_brainstem.trk ${meta.id}__be_midbrain.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__all_brainstem.trk ${meta.id}__be_midbrain.trk\
       --filtering_list ${params.FLF}brainstem_be_midbrain.txt -f
   # Extract be medulla
-  scil_filter_tractogram.py ${meta.id}__all_brainstem.trk ${meta.id}__be_medulla.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__all_brainstem.trk ${meta.id}__be_medulla.trk\
       --filtering_list ${params.FLF}brainstem_be_medulla.txt -f
   # Extract be pons
-  scil_filter_tractogram.py ${meta.id}__all_brainstem.trk ${meta.id}__be_pons.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__all_brainstem.trk ${meta.id}__be_pons.trk\
       --filtering_list ${params.FLF}brainstem_be_pons.txt -f
 
   # Extract ee thalamus
-  scil_filter_tractogram.py ${meta.id}__all_brainstem.trk ${meta.id}__ee_thalamus.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__all_brainstem.trk ${meta.id}__ee_thalamus.trk\
       --filtering_list ${params.FLF}brainstem_ee_thalamus.txt -f
   # Extract ee red_nucleus
-  scil_filter_tractogram.py ${meta.id}__all_brainstem.trk ${meta.id}__ee_red_nucleus.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__all_brainstem.trk ${meta.id}__ee_red_nucleus.trk\
       --filtering_list ${params.FLF}brainstem_ee_red_nucleus.txt -f
 
   # Prepartion for fronto-pontine, parietotemporooccipito-pontine, pyramidal, cortico-tectal
-  scil_filter_tractogram.py ${meta.id}__all_brainstem.trk ${meta.id}__ee_tmp_01.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__all_brainstem.trk ${meta.id}__ee_tmp_01.trk\
       --filtering_list ${params.FLF}brainstem_ee_tmp_01.txt -f
-  scil_filter_tractogram.py ${meta.id}__all_brainstem.trk ${meta.id}__ee_tmp_02.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__all_brainstem.trk ${meta.id}__ee_tmp_02.trk\
       --filtering_list ${params.FLF}brainstem_ee_tmp_02.txt -f
 
-  scil_tractogram_math.py union ${meta.id}__ee_tmp_01.trk ${meta.id}__ee_tmp_02.trk\
+  scil_tractogram_math union ${meta.id}__ee_tmp_01.trk ${meta.id}__ee_tmp_02.trk\
       ${meta.id}__ee_tmp_03.trk --save_empty -f
 
   # Extract ee Fronto-pontine R and L
-  scil_filter_tractogram.py ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_fronto_pontine_R.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_fronto_pontine_R.trk\
       --filtering_list ${params.FLF}brainstem_ee_F_pontine_R.txt -f
-  scil_filter_tractogram.py ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_fronto_pontine_L.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_fronto_pontine_L.trk\
       --filtering_list ${params.FLF}brainstem_ee_F_pontine_L.txt -f
-  scil_tractogram_math.py union ${meta.id}__ee_fronto_pontine_L.trk ${meta.id}__ee_fronto_pontine_R.trk\
+  scil_tractogram_math union ${meta.id}__ee_fronto_pontine_L.trk ${meta.id}__ee_fronto_pontine_R.trk\
       ${meta.id}__ee_fronto_pontine.trk --save_empty -f
 
   # Extract ee ParietoTemporooccipital pontine R and L
-  scil_filter_tractogram.py ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_parietotemporooccipital_pontine_R.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_parietotemporooccipital_pontine_R.trk\
       --filtering_list ${params.FLF}brainstem_ee_PTO_pontine_R.txt -f
-  scil_filter_tractogram.py ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_parietotemporooccipital_pontine_L.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_parietotemporooccipital_pontine_L.trk\
       --filtering_list ${params.FLF}brainstem_ee_PTO_pontine_L.txt -f
-  scil_tractogram_math.py union ${meta.id}__ee_parietotemporooccipital_pontine_L.trk ${meta.id}__ee_parietotemporooccipital_pontine_R.trk\
+  scil_tractogram_math union ${meta.id}__ee_parietotemporooccipital_pontine_L.trk ${meta.id}__ee_parietotemporooccipital_pontine_R.trk\
       ${meta.id}__ee_parietotemporooccipital_pontine.trk --save_empty -f
 
   # Extract ee Pyramidal
-  scil_filter_tractogram.py ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_pyramidal.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_pyramidal.trk\
       --filtering_list ${params.FLF}brainstem_ee_pyramidal.txt -f
 
   # Extract ee Tectal
-  scil_filter_tractogram.py ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_cortico_tectal.trk\
+  scil_tractogram_filter_by_roi ${meta.id}__ee_tmp_03.trk ${meta.id}__ee_cortico_tectal.trk\
       --filtering_list ${params.FLF}brainstem_ee_cortico_tectal.txt -f
-  scil_filter_streamlines_by_length.py ${meta.id}__ee_cortico_tectal.trk ${meta.id}__ee_cortico_tectal.trk --maxL 100 -f
+  scil_tractogram_filter_by_length ${meta.id}__ee_cortico_tectal.trk ${meta.id}__ee_cortico_tectal.trk --maxL 100 -f
 
   rm -f ${meta.id}__*tmp_*.trk
 
-  scil_tractogram_math.py union ${meta.id}__be_*.trk ${meta.id}__ee_*.trk ${meta.id}__all_brainstem_plausibles.trk --save_empty -f
+  scil_tractogram_math union ${meta.id}__be_*.trk ${meta.id}__ee_*.trk ${meta.id}__all_brainstem_plausibles.trk --save_empty -f
 
   if ${params.keep_intermediate_steps}
   then
-    scil_tractogram_math.py difference ${meta.id}__all_brainstem.trk ${meta.id}__all_brainstem_plausibles.trk ${meta.id}__all_brainstem_unplausibles.trk  --save_empty -f
+    scil_tractogram_math difference ${meta.id}__all_brainstem.trk ${meta.id}__all_brainstem_plausibles.trk ${meta.id}__all_brainstem_unplausibles.trk  --save_empty -f
   fi
   """
 }
@@ -602,9 +598,7 @@ process EXTRACT_PLAUSIBLE_CC_BG {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), path(tractogram) // from cc_for_extract_CC_BG
@@ -615,16 +609,16 @@ process EXTRACT_PLAUSIBLE_CC_BG {
 
   script:
   """
-  scil_filter_tractogram.py ${tractogram} tmp.trk \
+  scil_tractogram_filter_by_roi ${tractogram} tmp.trk \
     --filtering_list ${params.FLF}CC_BG.txt -f\
     --overwrite_distance both_ends include 1\
     --overwrite_distance either_end include 1
 
-  scil_filter_streamlines_by_length.py tmp.trk\
+  scil_tractogram_filter_by_length tmp.trk\
     ${meta.id}__in_CC_BG_f.trk\
     --maxL 170
 
-  scil_count_streamlines.py ${meta.id}__in_CC_BG_f.trk > ${meta.id}__in_CC_BG_f.txt
+  scil_tractogram_count_streamlines ${meta.id}__in_CC_BG_f.trk > ${meta.id}__in_CC_BG_f.txt
   """
 }
 
@@ -632,9 +626,7 @@ process SPLIT_ASSO_IN_HEMI {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), path(tractogram) // from asso_noBG_for_split_hemi
@@ -647,9 +639,9 @@ process SPLIT_ASSO_IN_HEMI {
 
   script:
   """
-  scil_filter_tractogram.py ${tractogram} ${meta.id}__asso_L.trk\
+  scil_tractogram_filter_by_roi ${tractogram} ${meta.id}__asso_L.trk\
    --filtering_list ${params.FLF}asso_L.txt -f
-   scil_filter_tractogram.py ${tractogram} ${meta.id}__asso_R.trk\
+   scil_tractogram_filter_by_roi ${tractogram} ${meta.id}__asso_R.trk\
     --filtering_list ${params.FLF}asso_R.txt -f
   """
 }
@@ -658,9 +650,7 @@ process SPLIT_USHAPE_CGM_ASSO {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), val(side), path(tractogram) // from asso_for_extract_u_shape
@@ -678,33 +668,33 @@ process SPLIT_USHAPE_CGM_ASSO {
 
     script:
     """
-    scil_filter_tractogram.py ${tractogram} ${meta.id}__tmp1_${side}.trk \
+    scil_tractogram_filter_by_roi ${tractogram} ${meta.id}__tmp1_${side}.trk \
     --filtering_list ${params.FLF}all_in_CGM_${side}.txt -f
 
-    scil_tractogram_math.py difference ${tractogram} ${meta.id}__tmp1_${side}.trk \
+    scil_tractogram_math difference ${tractogram} ${meta.id}__tmp1_${side}.trk \
                             ${meta.id}__asso_SWM_${side}.trk --save_empty -f
 
-    scil_filter_tractogram.py ${meta.id}__tmp1_${side}.trk ${meta.id}__asso_only_in_CGM_${side}.trk \
+    scil_tractogram_filter_by_roi ${meta.id}__tmp1_${side}.trk ${meta.id}__asso_only_in_CGM_${side}.trk \
     --filtering_list ${params.FLF}not_in_SWM_${side}.txt -f
 
-    scil_tractogram_math.py difference ${meta.id}__tmp1_${side}.trk ${meta.id}__asso_only_in_CGM_${side}.trk \
+    scil_tractogram_math difference ${meta.id}__tmp1_${side}.trk ${meta.id}__asso_only_in_CGM_${side}.trk \
                                 ${meta.id}__tmp2_${side}.trk --save_empty -f
 
-    scil_filter_tractogram.py ${meta.id}__tmp2_${side}.trk ${meta.id}__asso_Ushape_${side}.trk \
+    scil_tractogram_filter_by_roi ${meta.id}__tmp2_${side}.trk ${meta.id}__asso_Ushape_${side}.trk \
     --filtering_list ${params.FLF}not_in_DWM_${side}.txt -f
 
-    scil_extract_ushape.py ${meta.id}__asso_Ushape_${side}.trk --minU 0.5 --maxU 1 ${meta.id}__asso_Ushape_${side}_u.trk -f
+    scil_tractogram_extract_ushape ${meta.id}__asso_Ushape_${side}.trk --minU 0.5 --maxU 1 ${meta.id}__asso_Ushape_${side}_u.trk -f
 
-    scil_tractogram_math.py difference ${meta.id}__tmp2_${side}.trk ${meta.id}__asso_Ushape_${side}.trk \
+    scil_tractogram_math difference ${meta.id}__tmp2_${side}.trk ${meta.id}__asso_Ushape_${side}.trk \
                             ${meta.id}__asso_DWM_${side}.trk --save_empty -f
 
-    scil_tractogram_math.py union ${meta.id}__asso_DWM_${side}.trk ${meta.id}__asso_SWM_${side}.trk ${meta.id}__asso_f_${side}.trk --save_empty -f
+    scil_tractogram_math union ${meta.id}__asso_DWM_${side}.trk ${meta.id}__asso_SWM_${side}.trk ${meta.id}__asso_f_${side}.trk --save_empty -f
 
     if ${params.keep_intermediate_steps}
     then
-    scil_count_streamlines.py ${meta.id}__asso_only_in_CGM_${side}.trk > ${meta.id}__asso_only_in_CGM_${side}.txt
-    scil_count_streamlines.py ${meta.id}__asso_Ushape_${side}.trk > ${meta.id}__asso_Ushape_${side}.txt
-    scil_count_streamlines.py ${meta.id}__asso_f_${side}.trk > ${meta.id}__asso_f_${side}.txt
+    scil_tractogram_count_streamlines ${meta.id}__asso_only_in_CGM_${side}.trk > ${meta.id}__asso_only_in_CGM_${side}.txt
+    scil_tractogram_count_streamlines ${meta.id}__asso_Ushape_${side}.trk > ${meta.id}__asso_Ushape_${side}.txt
+    scil_tractogram_count_streamlines ${meta.id}__asso_f_${side}.trk > ${meta.id}__asso_f_${side}.txt
     fi
     """
 }
@@ -713,9 +703,7 @@ process CC_ALL_COMMISSURAL {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), path(tmp_cc), path(accx), path(ccbg), path(cc_homo) // from all_cc_for_commissural
@@ -726,11 +714,11 @@ process CC_ALL_COMMISSURAL {
 
   script:
   """
-    scil_tractogram_math.py union ${accx} ${ccbg} ${cc_homo} ${meta.id}__plausible_commissural_${params.mni_space}.trk --save_empty -f
+    scil_tractogram_math union ${accx} ${ccbg} ${cc_homo} ${meta.id}__plausible_commissural_${params.mni_space}.trk --save_empty -f
 
     if ${params.keep_intermediate_steps}
     then
-      scil_tractogram_math.py difference ${tmp_cc} ${meta.id}__plausible_commissural_${params.mni_space}.trk ${meta.id}__unplausible_commissural.trk --save_empty -f
+      scil_tractogram_math difference ${tmp_cc} ${meta.id}__plausible_commissural_${params.mni_space}.trk ${meta.id}__unplausible_commissural.trk --save_empty -f
     fi
   """
 }
@@ -739,9 +727,7 @@ process ASSO_BE_FRONTAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), val(side), path(tractogram) // from asso_all_intra_inter_for_be_frontal_filtering
@@ -752,9 +738,9 @@ process ASSO_BE_FRONTAL_GYRUS {
 
   script:
   """
-  scil_filter_tractogram.py ${tractogram} tmp.trk\
+  scil_tractogram_filter_by_roi ${tractogram} tmp.trk\
     --filtering_list ${params.FLF}ASSO_be_${gyrus}_${side}.txt -f
-  scil_extract_ushape.py tmp.trk --minU 0.5 --maxU 1\
+  scil_tractogram_extract_ushape tmp.trk --minU 0.5 --maxU 1\
     ${meta.id}_asso_intra_be_frontal_${gyrus}_${side}_u.trk -f
   """
 }
@@ -763,9 +749,7 @@ process ASSO_EE_FRONTAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), val(side), path(tractogram), val(gyrus), val(max_length) // from asso_frontal_ee_for_extract
@@ -775,11 +759,11 @@ process ASSO_EE_FRONTAL_GYRUS {
 
   script:
   """
-  scil_filter_tractogram.py ${tractogram} tmp_01.trk\
+  scil_tractogram_filter_by_roi ${tractogram} tmp_01.trk\
     --filtering_list ${params.FLF}ASSO_ee_${gyrus}_${side}.txt -f
-  scil_filter_streamlines_by_length.py tmp_01.trk tmp_02.trk\
+  scil_tractogram_filter_by_length tmp_01.trk tmp_02.trk\
     --maxL ${max_length} -f
-  scil_extract_ushape.py tmp_02.trk\
+  scil_tractogram_extract_ushape tmp_02.trk\
     --minU 0.5\
     --maxU 1\
     ${meta.id}_asso_intra_ee_frontal_${gyrus}_${side}.trk -f
@@ -790,9 +774,7 @@ process ASSO_BE_OCCIPITAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), val(side), path(tractogram) // from asso_all_intra_inter_for_be_occipital_filtering
@@ -803,9 +785,9 @@ process ASSO_BE_OCCIPITAL_GYRUS {
 
   script:
   """
-  scil_filter_tractogram.py ${tractogram} tmp.trk \
+  scil_tractogram_filter_by_roi ${tractogram} tmp.trk \
     --filtering_list ${params.FLF}ASSO_be_${gyrus}_${side}.txt -f
-  scil_extract_ushape.py tmp.trk\
+  scil_tractogram_extract_ushape tmp.trk\
     --minU 0.5\
     --maxU 1\
     ${meta.id}_asso_intra_be_occipital_${gyrus}_${side}_u.trk -f
@@ -816,9 +798,7 @@ process ASSO_EE_OCCIPITAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), val(side), path(tractogram), val(gyrus), val(max_length) // from asso_occipital_ee_for_extract
@@ -828,11 +808,11 @@ process ASSO_EE_OCCIPITAL_GYRUS {
 
   script:
   """
-  scil_filter_tractogram.py ${tractogram} tmp_01.trk\
+  scil_tractogram_filter_by_roi ${tractogram} tmp_01.trk\
     --filtering_list ${params.FLF}ASSO_ee_${gyrus}_${side}.txt -f
-  scil_filter_streamlines_by_length.py tmp_01.trk tmp_02.trk\
+  scil_tractogram_filter_by_length tmp_01.trk tmp_02.trk\
     --maxL ${max_length} -f
-  scil_extract_ushape.py tmp_02.trk\
+  scil_tractogram_extract_ushape tmp_02.trk\
     --minU 0.5\
     --maxU 1\
     ${meta.id}_asso_intra_ee_occipital_${gyrus}_${side}.trk -f
@@ -843,9 +823,7 @@ process ASSO_BE_PARIETAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), val(side), path(tractogram) // from asso_all_intra_inter_for_be_parietal_filtering
@@ -856,9 +834,9 @@ process ASSO_BE_PARIETAL_GYRUS {
 
   script:
   """
-  scil_filter_tractogram.py ${tractogram} tmp.trk\
+  scil_tractogram_filter_by_roi ${tractogram} tmp.trk\
     --filtering_list ${params.FLF}ASSO_be_${gyrus}_${side}.txt -f
-  scil_extract_ushape.py tmp.trk\
+  scil_tractogram_extract_ushape tmp.trk\
     --minU 0.5\
     --maxU 1\
     ${meta.id}_asso_intra_be_parietal_${gyrus}_${side}_u.trk -f
@@ -869,9 +847,7 @@ process ASSO_EE_PARIETAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), val(side), path(tractogram), val(gyrus), val(max_length) // from asso_parietal_ee_for_extract
@@ -881,11 +857,11 @@ process ASSO_EE_PARIETAL_GYRUS {
 
   script:
   """
-  scil_filter_tractogram.py ${tractogram} tmp_01.trk\
+  scil_tractogram_filter_by_roi ${tractogram} tmp_01.trk\
     --filtering_list ${params.FLF}ASSO_ee_${gyrus}_${side}.txt -f
-  scil_filter_streamlines_by_length.py tmp_01.trk tmp_02.trk\
+  scil_tractogram_filter_by_length tmp_01.trk tmp_02.trk\
     --maxL ${max_length} -f
-  scil_extract_ushape.py tmp_02.trk\
+  scil_tractogram_extract_ushape tmp_02.trk\
     --minU 0.5\
     --maxU 1\
     ${meta.id}_asso_intra_ee_parietal_${gyrus}_${side}.trk -f
@@ -896,9 +872,7 @@ process ASSO_BE_TEMPORAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), val(side), path(tractogram) // from asso_all_intra_inter_for_be_temporal_filtering
@@ -909,9 +883,9 @@ process ASSO_BE_TEMPORAL_GYRUS {
 
   script:
   """
-  scil_filter_tractogram.py ${tractogram} tmp.trk\
+  scil_tractogram_filter_by_roi ${tractogram} tmp.trk\
     --filtering_list ${params.FLF}ASSO_be_${gyrus}_${side}.txt -f
-  scil_extract_ushape.py tmp.trk\
+  scil_tractogram_extract_ushape tmp.trk\
     --minU 0.5\
     --maxU 1\
     ${meta.id}_asso_intra_be_temporal_${gyrus}_${side}_u.trk -f
@@ -922,9 +896,7 @@ process ASSO_EE_TEMPORAL_GYRUS {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), val(side), path(tractogram), val(gyrus), val(max_length) // from asso_temporal_ee_for_extract
@@ -934,11 +906,11 @@ process ASSO_EE_TEMPORAL_GYRUS {
 
   script:
   """
-  scil_filter_tractogram.py ${tractogram} tmp_01.trk\
+  scil_tractogram_filter_by_roi ${tractogram} tmp_01.trk\
     --filtering_list ${params.FLF}ASSO_ee_${gyrus}_${side}.txt -f
-  scil_filter_streamlines_by_length.py tmp_01.trk tmp_02.trk\
+  scil_tractogram_filter_by_length tmp_01.trk tmp_02.trk\
     --maxL ${max_length} -f
-  scil_extract_ushape.py tmp_02.trk\
+  scil_tractogram_extract_ushape tmp_02.trk\
     --minU 0.5\
     --maxU 1\
     ${meta.id}_asso_intra_ee_temporal_${gyrus}_${side}.trk -f
@@ -949,9 +921,7 @@ process TRK_PLAUSIBLE {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), path(tractogram) // from merge_trk_plausible
@@ -961,8 +931,8 @@ process TRK_PLAUSIBLE {
 
   script:
   """
-    scil_tractogram_math.py union ${tractogram} ${meta.id}__plausible_${params.mni_space}_tmp.trk --save_empty -f --no_metadata
-    scil_shuffle_streamlines.py ${meta.id}__plausible_${params.mni_space}_tmp.trk ${meta.id}__plausible_${params.mni_space}.trk -f
+    scil_tractogram_math union ${tractogram} ${meta.id}__plausible_${params.mni_space}_tmp.trk --save_empty -f --no_metadata
+    scil_tractogram_shuffle ${meta.id}__plausible_${params.mni_space}_tmp.trk ${meta.id}__plausible_${params.mni_space}.trk -f
   """
 }
 
@@ -970,9 +940,7 @@ process TRK_UNPLAUSIBLE {
   tag "$meta.id"
   cpus 1
 
-  container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://scil.usherbrooke.ca/containers/scilus_1.6.0.sif':
-        'scilus/scilus:1.6.0' }"
+  container 'scilus/scilpy:dev'
 
   input:
     tuple val(meta), path(trk01), path(trk02) // from for_trk_unplausible
@@ -981,7 +949,7 @@ process TRK_UNPLAUSIBLE {
 
   script:
   """
-    scil_tractogram_math.py difference ${trk01} ${trk02} ${meta.id}__unplausible_${params.mni_space}.trk --save_empty -f
+    scil_tractogram_math difference ${trk01} ${trk02} ${meta.id}__unplausible_${params.mni_space}.trk --save_empty -f
   """
 }
 
