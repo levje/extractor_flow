@@ -21,7 +21,15 @@ DESCRIPTION
                                             └── *.trk
                                             └── *_t1.nii.gz (diff space, optional)
     --templates_dir=/path/to/templates_dir
-                                        Directory containing the templates (e.g. JHU atlas).
+                                        ABSOLUTE PATH to directory containing the templates
+                                        and the filtering lists (e.g. JHU atlas). Structure
+                                        should look like:
+                                        [templates_dir]
+                                        ├── templates_and_ROIs
+                                        │   ├── JHU*.nii.gz
+                                        └── filtering_lists
+                                            └── filtering_list_*.txt
+
 
 OPTIONAL ARGUMENTS (current value)
 
