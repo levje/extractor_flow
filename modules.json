@@ -19,6 +19,11 @@
             "branch": "main",
             "git_sha": "0135a3ba712e89ad44419476494fca6fa3dd67ff",
             "installed_by": ["modules"]
+          },
+          "tractogram/removeinvalid": {
+            "branch": "main",
+            "git_sha": "0135a3ba712e89ad44419476494fca6fa3dd67ff",
+            "installed_by": ["modules"]
           }
         }
       },

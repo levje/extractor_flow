@@ -1,29 +1,11 @@
 include { REGISTRATION_ANTS } from '../../modules/nf-neuro/registration/ants/main'
 include { BETCROP_ANTSBET } from '../../modules/nf-neuro/betcrop/antsbet/main'
+include { TRACTOGRAM_REMOVEINVALID } from '../../modules/nf-neuro/tractogram/removeinvalid/main.nf'
 
 // TODO: Replace the following processes with the NF-Neuro module REGISTRATION_TRACTOGRAM
 include { REGISTRATION_TRACTOGRAM } from '../../modules/nf-neuro/registration/tractogram/main.nf'
-
-process COPY_T1_TO_ORIG {
-  tag "$meta.id"
-  cpus 1
-
-  container 'scilus/scilpy:dev'
-
-  input:
-    tuple val(meta), path(t1)
-
-  output:
-    file("${meta.id}__t1_orig_space.nii.gz")
-
-  when:
-    params.orig
-
-  script:
-  """
-    cp ${t1} ${meta.id}__t1_orig_space.nii.gz
-  """
-}
+include { COPY_FILE as COPY_T1_TO_ORIG } from '../../modules/local/utils/copy_file.nf'
+include { COPY_FILE as COPY_T1_ATLAS } from '../../modules/local/utils/copy_file.nf'
 
 // For tractograms that have a T1w, we assume they are not in the MNI space:
 // - We register the T1w to the template space and transform the tractograms to the template space.
@@ -82,42 +64,6 @@ workflow TRANSFORM_TO_MNI {
     transformations_for_orig = transformations_for_orig
 }
 
-process Remove_invalid_streamlines {
-    tag "$meta.id"
-    cpus 1
-
-    container 'scilus/scilpy:dev'
-
-    input:
-    tuple val(meta), path(tractogram)
-
-    output:
-    tuple val(meta), path("${meta.id}__rm_invalid_streamlines.trk"), emit: rm_invalid_for_remove_out_not_JHU
-
-    script:
-    """
-      scil_tractogram_remove_invalid ${tractogram} ${meta.id}__rm_invalid_streamlines.trk --cut_invalid --remove_single_point -f
-    """
-}
-
-process Copy_t1_atlas {
-    tag "$meta.id"
-    cpus 1
-
-    container 'scilus/scilpy:dev'
-
-    input:
-      tuple val(meta), path(tractogram)
-
-    output:
-      path "${meta.id}__t1_mni_space.nii.gz"
-
-    script:
-    """
-      cp ${params.rois_folder}${params.atlas.template} ${meta.id}__t1_mni_space.nii.gz
-    """
-}
-
 // For tractograms that DO NOT have a T1w, we assume they are in the MNI space:
 // - We remove the invalid streamlines and copy the template T1w to the subject folder.
 workflow CLEAN_IF_FROM_MNI {
@@ -131,11 +77,16 @@ workflow CLEAN_IF_FROM_MNI {
     // Keep the tractograms that do not have a T1w
     tractograms_to_clean = tractograms_to_clean.filter { it[2] == null }
     // Only keep (sid, tractogram)
-    tractograms_to_clean = tractograms_to_clean.map { [ it[0], it[1] ] }
+    tractograms_to_clean = tractograms_to_clean.map{ sid, trk, _null_t1 -> [sid, trk] }
 
-    Copy_t1_atlas(tractograms_to_clean)
-    Remove_invalid_streamlines(tractograms_to_clean)
+    template_t1 = Channel.fromPath("${params.rois_folder_host}${params.atlas.template}")
+    to_copy_atlas = tractograms_to_clean.combine(template_t1)
+      .map{ sid, _trk, t1 -> [sid, [], t1]}
+    COPY_T1_ATLAS(to_copy_atlas)
+
+    TRACTOGRAM_REMOVEINVALID(tractograms_to_clean)
+
 
     emit:
-    cleaned_mni_tractograms = Remove_invalid_streamlines.out.rm_invalid_for_remove_out_not_JHU
+    cleaned_mni_tractograms = TRACTOGRAM_REMOVEINVALID.out.tractograms
 }
