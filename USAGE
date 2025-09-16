@@ -20,6 +20,16 @@ DESCRIPTION
                                         └── S2
                                             └── *.trk
                                             └── *_t1.nii.gz (diff space, optional)
+    --templates_dir=/path/to/templates_dir
+                                        ABSOLUTE PATH to directory containing the templates
+                                        and the filtering lists (e.g. JHU atlas). Structure
+                                        should look like:
+                                        [templates_dir]
+                                        ├── templates_and_ROIs
+                                        │   ├── JHU*.nii.gz
+                                        └── filtering_lists
+                                            └── filtering_list_*.txt
+
 
 OPTIONAL ARGUMENTS (current value)
 
@@ -33,13 +43,13 @@ OPTIONAL ARGUMENTS (current value)
 
     --quick_registration                If set, will choose antsRegistrationSyNQuick.sh instead of antsRegistrationSyN.sh ($quick_registration).
 
-    --processes_bet_register_t1         Number of processes for T1 brain extraction task ($processes_bet_register_t1).
     --processes_major_filtering         Number of processes for the major filtering task ($processes_major_filtering).
     --processes                         The number of parallel processes to launch ($cpu_count).
                                         Only affects the local scheduler.
 
 AVAILABLE PROFILES (using -profile option (e.g. -profile macos,extract_bundles))
 
-macos                                   When this profile is used, ExtractorFlow will modify a parameter (scratch) for MacOS users.
+docker                                  When this profile is used, all processes will execute within Docker containers (recommended).
+apptainer                               When this profile is used, all processes will execute within Apptainer containers.
 fully_reproducible                      When this profile is used, all the parameters will be set to have 100% reproducible results.
-extract_bundles                         Extract bundles
+extract_bundles                         The flow will perform additional processing to extract all recognized bundles.

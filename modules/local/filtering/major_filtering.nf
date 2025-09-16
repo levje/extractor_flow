@@ -1,0 +1,36 @@
+process MAJOR_FILTERING {
+    tag "$meta.id"
+    cpus params.processes_major_filtering
+
+    container 'scilus/scilpy:dev'
+
+    input:
+      tuple val(meta), path(tractogram)
+
+    output:
+      tuple val(meta), path("${meta.id}__wb_clean01.trk"), emit: wb
+      tuple val(meta), path("${meta.id}__unplausible_streamlines.trk"), emit: unplausible
+      path("${meta.id}/*"), optional: true
+
+    script:
+    keep_intermediate_trk_flag=""
+        if (params.keep_intermediate_steps) {
+            keep_intermediate_trk_flag="--save_intermediate_tractograms"
+        }
+    """
+      scil_tractogram_filter_by_anatomy ${tractogram} \
+        ${params.rois_folder}/${params.atlas.JHU_8} \
+        ${meta.id} \
+        --minL ${params.min_streamline_length} \
+        --maxL ${params.max_streamline_length} \
+        --angle ${params.loop_angle_threshold} \
+        --csf_bin ${params.rois_folder}/${params.atlas.csf} \
+        --processes ${params.processes_major_filtering} \
+        --save_rejected \
+        $keep_intermediate_trk_flag \
+        -f
+
+      mv ${meta.id}/${tractogram.getSimpleName()}_filtered.trk ${meta.id}__wb_clean01.trk
+      mv ${meta.id}/${tractogram.getSimpleName()}_rejected.trk ${meta.id}__unplausible_streamlines.trk
+    """
+}
