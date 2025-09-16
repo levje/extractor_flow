@@ -4,7 +4,6 @@ include { TRACTOGRAM_REMOVEINVALID } from '../../modules/nf-neuro/tractogram/rem
 
 // TODO: Replace the following processes with the NF-Neuro module REGISTRATION_TRACTOGRAM
 include { REGISTRATION_TRACTOGRAM } from '../../modules/nf-neuro/registration/tractogram/main.nf'
-include { COPY_FILE as COPY_T1_TO_ORIG } from '../../modules/local/utils/copy_file.nf'
 include { COPY_FILE as COPY_T1_ATLAS } from '../../modules/local/utils/copy_file.nf'
 
 // For tractograms that have a T1w, we assume they are not in the MNI space:

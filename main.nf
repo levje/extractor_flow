@@ -6,13 +6,14 @@ params.help = false
 params.debug = true
 
 // Subworkflows
-include { TRANSFORM_TO_MNI; COPY_T1_TO_ORIG; CLEAN_IF_FROM_MNI } from './subworkflows/local/transform.nf'
+include { TRANSFORM_TO_MNI; CLEAN_IF_FROM_MNI } from './subworkflows/local/transform.nf'
 include { EXTRACT } from './subworkflows/local/extraction.nf'
 include { EXTRACT_BUNDLES } from './subworkflows/local/extension.nf'
 
 // Local modules
 include { TRACTOGRAM_MATH as RENAME_CORTICO_STRIATE } from './modules/local/merge/main.nf'
 include { MAJOR_FILTERING } from './modules/local/filtering/major_filtering.nf'
+include { COPY_FILE as COPY_T1_TO_ORIG } from './modules/local/utils/copy_file.nf'
 
 // NF-Neuro modules
 include { REGISTRATION_TRACTOGRAM as REGISTER_TRACTOGRAM_ORIG } from './modules/nf-neuro/registration/tractogram/main.nf'
