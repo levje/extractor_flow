@@ -44,7 +44,7 @@ workflow {
         REGISTER_TRACTOGRAM_ORIG(trks_for_register)
 
         // Copy the original T1w to the subject folder.
-        COPY_T1_TO_ORIG(data.t1s)
+        COPY_T1_TO_ORIG(data.t1s.map{ sid, t1 -> [sid, [], t1] })
 
         if (params.extract_bundles) {
             // Register the extracted bundles to the original space
