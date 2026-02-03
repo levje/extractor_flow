@@ -5,17 +5,9 @@ ExtractorFlow is a streamline filtering pipeline written in nextflow. In essence
 Additionnally, as described below, you can use this pipeline to extract recognized (i.e. plausible) bundles of streamlines.
 
 When using this work, please cite using the following:
+
 ```
-@article{petit2023structural,
-  title={The structural connectivity of the human angular gyrus as revealed by microdissection and diffusion tractography},
-  author={Petit, Laurent and Ali, Kariem Mahdy and Rheault, Fran{\c{c}}ois and Bor{\'e}, Arnaud and Cremona, Sandrine and Corsini, Francesco and De Benedictis, Alessandro and Descoteaux, Maxime and Sarubbo, Silvio},
-  journal={Brain Structure and Function},
-  volume={228},
-  number={1},
-  pages={103--120},
-  year={2023},
-  publisher={Springer}
-}
+PETIT, Laurent, ALI, Kariem Mahdy, RHEAULT, François, et al. The structural connectivity of the human angular gyrus as revealed by microdissection and diffusion tractography. Brain Structure and Function, 2023, vol. 228, no 1, p. 103-120.
 ```
 
 ## Requirements
@@ -87,13 +79,13 @@ extractor_templates/
 #### Complete arguments list
 To get a complete list of the available arguments you can provide, always refer to the usage printed by the nextflow script as follows:
 ```bash
-nextflow run levje/nf-extractor --help
+nextflow run scilus/extractor_flow --help
 ```
 
 ### Standard filtering using Docker (recommended).
 The following example gives a general idea on what arguments you can provide. The key part is to select the `docker` profile as well as providing the mandatory arguments (i.e. `--input` & `--templates_dir`):
 ```bash
-nextflow run levje/nf-extractor \  
+nextflow run scilus/extractor_flow \  
     --input <input_folder> \  
     --templates_dir <path/to/extractor_templates> \ 
     -profile docker \  
@@ -105,7 +97,7 @@ nextflow run levje/nf-extractor \
 ### Standard filering using Apptainer/Singularity.  
 To use apptainer containers, you should only have to swap the profile used to `apptainer` as shown in the following example:
 ```bash
-nextflow run levje/nf-extractor \  
+nextflow run scilus/extractor_flow \  
     --input <input_folder> \  
     --templates_dir <path/to/extractor_templates> \ 
     -profile apptainer \ 
@@ -116,7 +108,7 @@ nextflow run levje/nf-extractor \
 ### Filtering and bundle extraction.  
 Notice, in the following example, the addition of the `extract_bundles` profile. This will trigger a few additionnal processes that will separate and organize new files refering to the bundles identified by this flow. The example is using Docker (as the docker profile is enabled), but the same applies for Apptainer.
 ```bash
-nextflow run levje/nf-extractor \  
+nextflow run scilus/extractor_flow \  
     --input <input_folder> \  
     --templates_dir <path/to/extractor_templates> \ 
     -profile docker,extract_bundles \ 
